@@ -1,0 +1,26 @@
+{
+    "roots": [""],
+    "testMatch": ["**/test/**/*.spec.ts"],
+    "moduleDirectories": ["node_modules"],
+    "transform": {
+        "^.+\\.ts$": "ts-jest"
+    },
+
+    "verbose": true,
+
+    "coveragePathIgnorePatterns": [
+        "/node_modules/",
+        "/test/",
+        "/coverage/",
+        "/src/parser/"
+    ],
+    "coverageReporters": ["text", "text-summary", "lcov"],
+    "coverageThreshold": {
+        "global": {
+            "statements": 80,
+            "branches": 80,
+            "functions": 80,
+            "lines": 80
+        }
+    }
+}
