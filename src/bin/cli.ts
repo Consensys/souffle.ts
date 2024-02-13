@@ -8,14 +8,18 @@ async function main() {
     const program = new Command();
 
     program
-        .name(pkg.name)
+        .name("soufle-ts")
         .description(pkg.description)
         .version(pkg.version, "-v, --version", "Print package version")
         .helpOption("-h, --help", "Print help message");
 
     program.argument("[file(s)]", "Either one or more Datalog files");
 
-    program.option("--stdin", "Read input from STDIN instead of files");
+    program
+        .option("--stdin", "Read input from STDIN instead of files")
+        .option("--from-ast", "Treat an input as JSON AST")
+        .option("--ast", "Print JSON AST")
+        .option("--print", "Print Datalog source");
 
     program.parse(process.argv);
 
@@ -42,7 +46,25 @@ async function main() {
         }
     }
 
-    console.log(fileMap);
+    if (options.fromAst) {
+        /**
+         * @todo Implement treating an input as JSON AST
+         */
+    }
+
+    if (options.ast) {
+        console.log("<JSON AST>");
+
+        return;
+    }
+
+    if (options.print) {
+        console.log("<SOURCE>");
+
+        return;
+    }
+
+    throw new Error("Provide one of output options");
 }
 
 main()
