@@ -29,6 +29,8 @@ describe(`Parse Round-trip tests`, () => {
             it("Re-parses after outputting correctly", () => {
                 expect(() => {
                     output = ppProg(prog);
+                    // Uncomment below line to save intermediate output
+                    // fse.writeFileSync(dl.slice(0, -3) + ".tmp", output);
                     reParsedProg = parseProgram(output);
                 }).not.toThrow();
             });

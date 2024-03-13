@@ -23,7 +23,7 @@ async function main() {
 
     program
         .option("--stdin", "Read input from STDIN instead of files")
-        .option("--instance", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
+        .option("--instance <type>", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
 
     program.parse(process.argv);
 

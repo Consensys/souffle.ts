@@ -1,0 +1,1023 @@
+// ======= PREAMBLE =======
+
+.type id <: number
+.type bool <: number
+.type ExpressionId <: id
+.type StatementId <: id
+.type TypeNameId <: id
+
+.type ContractKind <: symbol
+.type LiteralKind <: symbol
+.type TimeUnit <: symbol
+.type EtherUnit <: symbol
+.type FunctionCallKind <: symbol
+.type DataLocation <: symbol
+.type Mutability <: symbol
+.type FunctionStateMutability <: symbol
+.type FunctionKind <: symbol
+.type ModifierInvocationKind <: symbol
+.type StateVariableVisibility <: symbol
+.type FunctionVisibility <: symbol
+.type ElementaryTypeNameMutability <: symbol
+
+.type SubdenominationT <: symbol
+
+.decl parent(parentId: id, childId: id)
+.decl src(id: id, src: symbol)
+.decl Node(id: id)
+.decl ExternalCall(id: FunctionCallId)
+.decl ConstantExpression(id: id)
+.decl CompilerVersion(major: number, minor: number, patch: number)
+.decl Expression(id: id)
+.decl Statement(id: id)
+.decl StatementWithChildren(id: id)
+.decl PrimaryExpression(id: id)
+.decl TypeName(id: id)
+.decl ContractDefinition_linearizedBaseContracts(parentId: ContractDefinitionId, childId: ContractDefinitionId, idx: number)
+.decl ContractDefinition_usedErrors(parentId: ContractDefinitionId, childId: ErrorDefinitionId, idx: number)
+.decl ContractDefinition_usedEvents(parentId: ContractDefinitionId, childId: EventDefinitionId, idx: number)
+.decl TupleExpression_components(parentId: TupleExpressionId, childId: ExpressionId, idx: number, realIdx: number)
+.decl FunctionDefinition_modifiers(parentId: FunctionDefinitionId, childId: ModifierInvocationId, idx: number)
+.decl FunctionCall_arguments(parentId: FunctionCallId, childId: ExpressionId, idx: number)
+.decl TryStatement_clauses(parentId: TryStatementId, childId: TryCatchClauseId, idx: number)
+.decl VariableDeclarationStatement_declarations(parentId: VariableDeclarationStatementId, childId: VariableDeclarationId, idx: number)
+.decl InheritanceSpecifier_arguments(parentId: InheritanceSpecifierId, childId: ExpressionId, idx: number)
+.decl ModifierInvocation_arguments(parentId: ModifierInvocationId, childId: ExpressionId, idx: number)
+.decl ParameterList_parameters(parentId: ParameterListId, childId: VariableDeclarationId, idx: number)
+.decl Block_statements(parentId: BlockId, childId: StatementId, idx: number)
+.decl UncheckedBlock_statements(parentId: UncheckedBlockId, childId: StatementId, idx: number)
+.decl UsingForDirective_functionList(parentId: UsingForDirectiveId, childId: IdentifierPathId, operator: symbol, idx: number)
+.decl StructDefinition_members(parentId: StructDefinitionId, childId: VariableDeclarationId, idx: number)
+.decl EnumDefinition_members(parentId: EnumDefinitionId, childId: EnumValueId, idx: number)
+.decl VariableDeclarationStatement_assignments(parentId: VariableDeclarationStatementId, childId: VariableDeclarationId, idx: number, realIdx: number)
+.decl OverrideSpecifier_overrides(parentId: OverrideSpecifierId, childId: id, idx: number)
+
+.decl FunctionCall_fieldNames(parentId: FunctionCallId, name: symbol, idx: number)
+.decl PragmaDirective_literals(parentId: FunctionCallId, literal: symbol, idx: number)
+.decl SourceUnit_exportedSymbols(parentId: SourceUnitId, name: symbol, id: id)
+.decl FunctionCallOptions_options(parentId: FunctionCallOptionsId, name: symbol, id: id)
+
+.type SourceUnitId <: id
+.decl SourceUnit_sourceEntryKey(id: SourceUnitId, val: symbol)
+.decl SourceUnit_sourceListIndex(id: SourceUnitId, val: number)
+.decl SourceUnit_absolutePath(id: SourceUnitId, val: symbol)
+.decl SourceUnit_license(id: SourceUnitId, val: symbol, present: bool)
+Node(id) :- SourceUnit(id).
+.decl SourceUnit(id: SourceUnitId)
+.type ContractDefinitionId <: id
+.decl ContractDefinition_name(id: ContractDefinitionId, val: symbol)
+.decl ContractDefinition_scope(id: ContractDefinitionId, val: SourceUnitId)
+.decl ContractDefinition_kind(id: ContractDefinitionId, val: ContractKind)
+.decl ContractDefinition_abstract(id: ContractDefinitionId, val: bool)
+.decl ContractDefinition_fullyImplemented(id: ContractDefinitionId, val: bool)
+Node(id) :- ContractDefinition(id).
+.decl ContractDefinition(id: ContractDefinitionId)
+.type VariableDeclarationId <: id
+.decl VariableDeclaration_constant(id: VariableDeclarationId, val: bool)
+.decl VariableDeclaration_indexed(id: VariableDeclarationId, val: bool)
+.decl VariableDeclaration_name(id: VariableDeclarationId, val: symbol)
+.decl VariableDeclaration_scope(id: VariableDeclarationId, val: id)
+.decl VariableDeclaration_stateVariable(id: VariableDeclarationId, val: bool)
+.decl VariableDeclaration_storageLocation(id: VariableDeclarationId, val: DataLocation)
+.decl VariableDeclaration_visibility(id: VariableDeclarationId, val: StateVariableVisibility)
+.decl VariableDeclaration_mutability(id: VariableDeclarationId, val: Mutability)
+.decl VariableDeclaration_typeString(id: VariableDeclarationId, val: symbol)
+.decl VariableDeclaration_typeName(id: VariableDeclarationId, val: TypeNameId, present: bool)
+.decl VariableDeclaration_overrideSpecifier(id: VariableDeclarationId, val: OverrideSpecifierId, present: bool)
+.decl VariableDeclaration_value(id: VariableDeclarationId, val: ExpressionId, present: bool)
+Node(id) :- VariableDeclaration(id).
+.decl VariableDeclaration(id: VariableDeclarationId)
+.type FunctionDefinitionId <: id
+.decl FunctionDefinition_scope(id: FunctionDefinitionId, val: id)
+.decl FunctionDefinition_kind(id: FunctionDefinitionId, val: FunctionKind)
+.decl FunctionDefinition_name(id: FunctionDefinitionId, val: symbol)
+.decl FunctionDefinition_virtual(id: FunctionDefinitionId, val: bool)
+.decl FunctionDefinition_visibility(id: FunctionDefinitionId, val: FunctionVisibility)
+.decl FunctionDefinition_stateMutability(id: FunctionDefinitionId, val: FunctionStateMutability)
+.decl FunctionDefinition_isConstructor(id: FunctionDefinitionId, val: bool)
+.decl FunctionDefinition_parameters(id: FunctionDefinitionId, val: ParameterListId)
+.decl FunctionDefinition_returnParameters(id: FunctionDefinitionId, val: ParameterListId)
+.decl FunctionDefinition_overrideSpecifier(id: FunctionDefinitionId, val: OverrideSpecifierId, present: bool)
+.decl FunctionDefinition_body(id: FunctionDefinitionId, val: BlockId, present: bool)
+Node(id) :- FunctionDefinition(id).
+.decl FunctionDefinition(id: FunctionDefinitionId)
+.type ExpressionStatementId <: StatementId
+.decl ExpressionStatement_expression(id: ExpressionStatementId, val: ExpressionId)
+Statement(id) :- ExpressionStatement(id).
+Node(id) :- ExpressionStatement(id).
+.decl ExpressionStatement(id: ExpressionStatementId)
+.type AssignmentId <: ExpressionId
+.decl Assignment_typeString(id: AssignmentId, val: symbol)
+.decl Assignment_operator(id: AssignmentId, val: symbol)
+.decl Assignment_leftHandSide(id: AssignmentId, val: ExpressionId)
+.decl Assignment_rightHandSide(id: AssignmentId, val: ExpressionId)
+Expression(id) :- Assignment(id).
+Node(id) :- Assignment(id).
+.decl Assignment(id: AssignmentId)
+.type BinaryOperationId <: ExpressionId
+.decl BinaryOperation_typeString(id: BinaryOperationId, val: symbol)
+.decl BinaryOperation_operator(id: BinaryOperationId, val: symbol)
+.decl BinaryOperation_leftExpression(id: BinaryOperationId, val: ExpressionId)
+.decl BinaryOperation_rightExpression(id: BinaryOperationId, val: ExpressionId)
+.decl BinaryOperation_userFunction(id: BinaryOperationId, val: id, present: bool)
+Expression(id) :- BinaryOperation(id).
+Node(id) :- BinaryOperation(id).
+.decl BinaryOperation(id: BinaryOperationId)
+.type IdentifierId <: ExpressionId
+.decl Identifier_typeString(id: IdentifierId, val: symbol)
+.decl Identifier_name(id: IdentifierId, val: symbol)
+.decl Identifier_referencedDeclaration(id: IdentifierId, val: id)
+Expression(id) :- Identifier(id).
+Node(id) :- Identifier(id).
+.decl Identifier(id: IdentifierId)
+.type FunctionCallId <: ExpressionId
+.decl FunctionCall_typeString(id: FunctionCallId, val: symbol)
+.decl FunctionCall_kind(id: FunctionCallId, val: FunctionCallKind)
+.decl FunctionCall_expression(id: FunctionCallId, val: ExpressionId)
+Expression(id) :- FunctionCall(id).
+Node(id) :- FunctionCall(id).
+.decl FunctionCall(id: FunctionCallId)
+.type LiteralId <: ExpressionId
+.decl Literal_typeString(id: LiteralId, val: symbol)
+.decl Literal_kind(id: LiteralId, val: LiteralKind)
+.decl Literal_hexValue(id: LiteralId, val: symbol)
+.decl Literal_value(id: LiteralId, val: symbol)
+.decl Literal_subdenomination(id: LiteralId, val: SubdenominationT, present: bool)
+Expression(id) :- Literal(id).
+Node(id) :- Literal(id).
+.decl Literal(id: LiteralId)
+.type NewExpressionId <: ExpressionId
+.decl NewExpression_typeString(id: NewExpressionId, val: symbol)
+.decl NewExpression_typeName(id: NewExpressionId, val: TypeNameId)
+Expression(id) :- NewExpression(id).
+Node(id) :- NewExpression(id).
+.decl NewExpression(id: NewExpressionId)
+.type ConditionalId <: ExpressionId
+.decl Conditional_typeString(id: ConditionalId, val: symbol)
+.decl Conditional_condition(id: ConditionalId, val: ExpressionId)
+.decl Conditional_trueExpression(id: ConditionalId, val: ExpressionId)
+.decl Conditional_falseExpression(id: ConditionalId, val: ExpressionId)
+Expression(id) :- Conditional(id).
+Node(id) :- Conditional(id).
+.decl Conditional(id: ConditionalId)
+.type FunctionCallOptionsId <: ExpressionId
+.decl FunctionCallOptions_typeString(id: FunctionCallOptionsId, val: symbol)
+.decl FunctionCallOptions_expression(id: FunctionCallOptionsId, val: ExpressionId)
+Expression(id) :- FunctionCallOptions(id).
+Node(id) :- FunctionCallOptions(id).
+.decl FunctionCallOptions(id: FunctionCallOptionsId)
+.type UnaryOperationId <: ExpressionId
+.decl UnaryOperation_typeString(id: UnaryOperationId, val: symbol)
+.decl UnaryOperation_prefix(id: UnaryOperationId, val: bool)
+.decl UnaryOperation_operator(id: UnaryOperationId, val: symbol)
+.decl UnaryOperation_subExpression(id: UnaryOperationId, val: ExpressionId)
+.decl UnaryOperation_userFunction(id: UnaryOperationId, val: id, present: bool)
+Expression(id) :- UnaryOperation(id).
+Node(id) :- UnaryOperation(id).
+.decl UnaryOperation(id: UnaryOperationId)
+.type IndexAccessId <: ExpressionId
+.decl IndexAccess_typeString(id: IndexAccessId, val: symbol)
+.decl IndexAccess_baseExpression(id: IndexAccessId, val: ExpressionId)
+.decl IndexAccess_indexExpression(id: IndexAccessId, val: ExpressionId, present: bool)
+Expression(id) :- IndexAccess(id).
+Node(id) :- IndexAccess(id).
+.decl IndexAccess(id: IndexAccessId)
+.type MemberAccessId <: ExpressionId
+.decl MemberAccess_typeString(id: MemberAccessId, val: symbol)
+.decl MemberAccess_expression(id: MemberAccessId, val: ExpressionId)
+.decl MemberAccess_memberName(id: MemberAccessId, val: symbol)
+.decl MemberAccess_referencedDeclaration(id: MemberAccessId, val: id)
+Expression(id) :- MemberAccess(id).
+Node(id) :- MemberAccess(id).
+.decl MemberAccess(id: MemberAccessId)
+.type ElementaryTypeNameExpressionId <: ExpressionId
+.decl ElementaryTypeNameExpression_typeString(id: ElementaryTypeNameExpressionId, val: symbol)
+.decl ElementaryTypeNameExpression_typeName(id: ElementaryTypeNameExpressionId, val: symbol)
+Expression(id) :- ElementaryTypeNameExpression(id).
+Node(id) :- ElementaryTypeNameExpression(id).
+.decl ElementaryTypeNameExpression(id: ElementaryTypeNameExpressionId)
+.type TupleExpressionId <: ExpressionId
+.decl TupleExpression_typeString(id: TupleExpressionId, val: symbol)
+.decl TupleExpression_isInlineArray(id: TupleExpressionId, val: bool)
+Expression(id) :- TupleExpression(id).
+Node(id) :- TupleExpression(id).
+.decl TupleExpression(id: TupleExpressionId)
+.type IndexRangeAccessId <: ExpressionId
+.decl IndexRangeAccess_typeString(id: IndexRangeAccessId, val: symbol)
+.decl IndexRangeAccess_baseExpression(id: IndexRangeAccessId, val: ExpressionId)
+.decl IndexRangeAccess_startExpression(id: IndexRangeAccessId, val: ExpressionId, present: bool)
+.decl IndexRangeAccess_endExpression(id: IndexRangeAccessId, val: ExpressionId, present: bool)
+Expression(id) :- IndexRangeAccess(id).
+Node(id) :- IndexRangeAccess(id).
+.decl IndexRangeAccess(id: IndexRangeAccessId)
+.type ErrorDefinitionId <: id
+.decl ErrorDefinition_name(id: ErrorDefinitionId, val: symbol)
+.decl ErrorDefinition_parameters(id: ErrorDefinitionId, val: ParameterListId)
+Node(id) :- ErrorDefinition(id).
+.decl ErrorDefinition(id: ErrorDefinitionId)
+.type UserDefinedValueTypeDefinitionId <: id
+.decl UserDefinedValueTypeDefinition_name(id: UserDefinedValueTypeDefinitionId, val: symbol)
+.decl UserDefinedValueTypeDefinition_underlyingType(id: UserDefinedValueTypeDefinitionId, val: ElementaryTypeNameId)
+Node(id) :- UserDefinedValueTypeDefinition(id).
+.decl UserDefinedValueTypeDefinition(id: UserDefinedValueTypeDefinitionId)
+.type StructDefinitionId <: id
+.decl StructDefinition_name(id: StructDefinitionId, val: symbol)
+.decl StructDefinition_scope(id: StructDefinitionId, val: id)
+.decl StructDefinition_visibility(id: StructDefinitionId, val: symbol)
+Node(id) :- StructDefinition(id).
+.decl StructDefinition(id: StructDefinitionId)
+.type EnumDefinitionId <: id
+.decl EnumDefinition_name(id: EnumDefinitionId, val: symbol)
+Node(id) :- EnumDefinition(id).
+.decl EnumDefinition(id: EnumDefinitionId)
+.type EnumValueId <: id
+.decl EnumValue_name(id: EnumValueId, val: symbol)
+Node(id) :- EnumValue(id).
+.decl EnumValue(id: EnumValueId)
+.type EventDefinitionId <: id
+.decl EventDefinition_anonymous(id: EventDefinitionId, val: bool)
+.decl EventDefinition_name(id: EventDefinitionId, val: symbol)
+.decl EventDefinition_parameters(id: EventDefinitionId, val: ParameterListId)
+Node(id) :- EventDefinition(id).
+.decl EventDefinition(id: EventDefinitionId)
+.type ModifierDefinitionId <: id
+.decl ModifierDefinition_name(id: ModifierDefinitionId, val: symbol)
+.decl ModifierDefinition_virtual(id: ModifierDefinitionId, val: bool)
+.decl ModifierDefinition_visibility(id: ModifierDefinitionId, val: symbol)
+.decl ModifierDefinition_parameters(id: ModifierDefinitionId, val: ParameterListId)
+.decl ModifierDefinition_overrideSpecifier(id: ModifierDefinitionId, val: OverrideSpecifierId, present: bool)
+.decl ModifierDefinition_body(id: ModifierDefinitionId, val: BlockId, present: bool)
+Node(id) :- ModifierDefinition(id).
+.decl ModifierDefinition(id: ModifierDefinitionId)
+.type MappingId <: TypeNameId
+.decl Mapping_typeString(id: MappingId, val: symbol)
+.decl Mapping_keyType(id: MappingId, val: TypeNameId)
+.decl Mapping_valueType(id: MappingId, val: TypeNameId)
+TypeName(id) :- Mapping(id).
+Node(id) :- Mapping(id).
+.decl Mapping(id: MappingId)
+.type FunctionTypeNameId <: TypeNameId
+.decl FunctionTypeName_typeString(id: FunctionTypeNameId, val: symbol)
+.decl FunctionTypeName_visibility(id: FunctionTypeNameId, val: FunctionVisibility)
+.decl FunctionTypeName_stateMutability(id: FunctionTypeNameId, val: FunctionStateMutability)
+.decl FunctionTypeName_parameterTypes(id: FunctionTypeNameId, val: ParameterListId)
+.decl FunctionTypeName_returnParameterTypes(id: FunctionTypeNameId, val: ParameterListId)
+TypeName(id) :- FunctionTypeName(id).
+Node(id) :- FunctionTypeName(id).
+.decl FunctionTypeName(id: FunctionTypeNameId)
+.type ElementaryTypeNameId <: TypeNameId
+.decl ElementaryTypeName_typeString(id: ElementaryTypeNameId, val: symbol)
+.decl ElementaryTypeName_name(id: ElementaryTypeNameId, val: symbol)
+.decl ElementaryTypeName_stateMutability(id: ElementaryTypeNameId, val: ElementaryTypeNameMutability)
+TypeName(id) :- ElementaryTypeName(id).
+Node(id) :- ElementaryTypeName(id).
+.decl ElementaryTypeName(id: ElementaryTypeNameId)
+.type ArrayTypeNameId <: TypeNameId
+.decl ArrayTypeName_typeString(id: ArrayTypeNameId, val: symbol)
+.decl ArrayTypeName_baseType(id: ArrayTypeNameId, val: TypeNameId)
+.decl ArrayTypeName_length(id: ArrayTypeNameId, val: ExpressionId, present: bool)
+TypeName(id) :- ArrayTypeName(id).
+Node(id) :- ArrayTypeName(id).
+.decl ArrayTypeName(id: ArrayTypeNameId)
+.type UserDefinedTypeNameId <: TypeNameId
+.decl UserDefinedTypeName_typeString(id: UserDefinedTypeNameId, val: symbol)
+.decl UserDefinedTypeName_name(id: UserDefinedTypeNameId, val: symbol, present: bool)
+.decl UserDefinedTypeName_referencedDeclaration(id: UserDefinedTypeNameId, val: id)
+.decl UserDefinedTypeName_path(id: UserDefinedTypeNameId, val: IdentifierPathId, present: bool)
+TypeName(id) :- UserDefinedTypeName(id).
+Node(id) :- UserDefinedTypeName(id).
+.decl UserDefinedTypeName(id: UserDefinedTypeNameId)
+.type ForStatementId <: StatementId
+.decl ForStatement_body(id: ForStatementId, val: StatementId)
+.decl ForStatement_initializationExpression(id: ForStatementId, val: ExpressionId, present: bool)
+.decl ForStatement_condition(id: ForStatementId, val: ExpressionId, present: bool)
+.decl ForStatement_loopExpression(id: ForStatementId, val: ExpressionStatementId, present: bool)
+Statement(id) :- ForStatement(id).
+Node(id) :- ForStatement(id).
+.decl ForStatement(id: ForStatementId)
+.type TryStatementId <: StatementId
+.decl TryStatement_externalCall(id: TryStatementId, val: FunctionCallId)
+Statement(id) :- TryStatement(id).
+Node(id) :- TryStatement(id).
+.decl TryStatement(id: TryStatementId)
+.type ThrowId <: StatementId
+Statement(id) :- Throw(id).
+Node(id) :- Throw(id).
+.decl Throw(id: ThrowId)
+.type BreakId <: StatementId
+Statement(id) :- Break(id).
+Node(id) :- Break(id).
+.decl Break(id: BreakId)
+.type EmitStatementId <: StatementId
+.decl EmitStatement_eventCall(id: EmitStatementId, val: FunctionCallId)
+Statement(id) :- EmitStatement(id).
+Node(id) :- EmitStatement(id).
+.decl EmitStatement(id: EmitStatementId)
+.type InlineAssemblyId <: StatementId
+Statement(id) :- InlineAssembly(id).
+Node(id) :- InlineAssembly(id).
+.decl InlineAssembly(id: InlineAssemblyId)
+.type BlockId <: StatementId
+Statement(id) :- Block(id).
+Node(id) :- Block(id).
+.decl Block(id: BlockId)
+.type RevertStatementId <: StatementId
+.decl RevertStatement_errorCall(id: RevertStatementId, val: FunctionCallId)
+Statement(id) :- RevertStatement(id).
+Node(id) :- RevertStatement(id).
+.decl RevertStatement(id: RevertStatementId)
+.type UncheckedBlockId <: StatementId
+Statement(id) :- UncheckedBlock(id).
+Node(id) :- UncheckedBlock(id).
+.decl UncheckedBlock(id: UncheckedBlockId)
+.type ReturnId <: StatementId
+.decl Return_functionReturnParameters(id: ReturnId, val: number)
+.decl Return_expression(id: ReturnId, val: ExpressionId, present: bool)
+Statement(id) :- Return(id).
+Node(id) :- Return(id).
+.decl Return(id: ReturnId)
+.type WhileStatementId <: StatementId
+.decl WhileStatement_condition(id: WhileStatementId, val: ExpressionId)
+.decl WhileStatement_body(id: WhileStatementId, val: StatementId)
+Statement(id) :- WhileStatement(id).
+Node(id) :- WhileStatement(id).
+.decl WhileStatement(id: WhileStatementId)
+.type VariableDeclarationStatementId <: StatementId
+.decl VariableDeclarationStatement_initialValue(id: VariableDeclarationStatementId, val: ExpressionId, present: bool)
+Statement(id) :- VariableDeclarationStatement(id).
+Node(id) :- VariableDeclarationStatement(id).
+.decl VariableDeclarationStatement(id: VariableDeclarationStatementId)
+.type IfStatementId <: StatementId
+.decl IfStatement_condition(id: IfStatementId, val: ExpressionId)
+.decl IfStatement_trueBody(id: IfStatementId, val: StatementId)
+.decl IfStatement_falseBody(id: IfStatementId, val: StatementId, present: bool)
+Statement(id) :- IfStatement(id).
+Node(id) :- IfStatement(id).
+.decl IfStatement(id: IfStatementId)
+.type TryCatchClauseId <: StatementId
+.decl TryCatchClause_errorName(id: TryCatchClauseId, val: symbol)
+.decl TryCatchClause_block(id: TryCatchClauseId, val: BlockId)
+.decl TryCatchClause_parameters(id: TryCatchClauseId, val: ParameterListId, present: bool)
+Statement(id) :- TryCatchClause(id).
+Node(id) :- TryCatchClause(id).
+.decl TryCatchClause(id: TryCatchClauseId)
+.type DoWhileStatementId <: StatementId
+.decl DoWhileStatement_condition(id: DoWhileStatementId, val: ExpressionId)
+.decl DoWhileStatement_body(id: DoWhileStatementId, val: StatementId)
+Statement(id) :- DoWhileStatement(id).
+Node(id) :- DoWhileStatement(id).
+.decl DoWhileStatement(id: DoWhileStatementId)
+.type ContinueId <: StatementId
+Statement(id) :- Continue(id).
+Node(id) :- Continue(id).
+.decl Continue(id: ContinueId)
+.type PlaceholderStatementId <: StatementId
+Statement(id) :- PlaceholderStatement(id).
+Node(id) :- PlaceholderStatement(id).
+.decl PlaceholderStatement(id: PlaceholderStatementId)
+.type ParameterListId <: id
+Node(id) :- ParameterList(id).
+.decl ParameterList(id: ParameterListId)
+.type InheritanceSpecifierId <: id
+.decl InheritanceSpecifier_baseType(id: InheritanceSpecifierId, val: id)
+Node(id) :- InheritanceSpecifier(id).
+.decl InheritanceSpecifier(id: InheritanceSpecifierId)
+.type UsingForDirectiveId <: id
+.decl UsingForDirective_isGlobal(id: UsingForDirectiveId, val: bool)
+.decl UsingForDirective_libraryName(id: UsingForDirectiveId, val: id, present: bool)
+.decl UsingForDirective_typeName(id: UsingForDirectiveId, val: TypeNameId, present: bool)
+Node(id) :- UsingForDirective(id).
+.decl UsingForDirective(id: UsingForDirectiveId)
+.type IdentifierPathId <: id
+.decl IdentifierPath_name(id: IdentifierPathId, val: symbol)
+.decl IdentifierPath_referencedDeclaration(id: IdentifierPathId, val: id)
+Node(id) :- IdentifierPath(id).
+.decl IdentifierPath(id: IdentifierPathId)
+.type PragmaDirectiveId <: id
+Node(id) :- PragmaDirective(id).
+.decl PragmaDirective(id: PragmaDirectiveId)
+.type ModifierInvocationId <: id
+.decl ModifierInvocation_modifierName(id: ModifierInvocationId, val: id)
+.decl ModifierInvocation_kind(id: ModifierInvocationId, val: ModifierInvocationKind, present: bool)
+Node(id) :- ModifierInvocation(id).
+.decl ModifierInvocation(id: ModifierInvocationId)
+.type ImportDirectiveId <: id
+.decl ImportDirective_file(id: ImportDirectiveId, val: symbol)
+.decl ImportDirective_absolutePath(id: ImportDirectiveId, val: symbol)
+.decl ImportDirective_unitAlias(id: ImportDirectiveId, val: symbol)
+.decl ImportDirective_scope(id: ImportDirectiveId, val: SourceUnitId)
+.decl ImportDirective_sourceUnit(id: ImportDirectiveId, val: SourceUnitId)
+Node(id) :- ImportDirective(id).
+.decl ImportDirective(id: ImportDirectiveId)
+.type OverrideSpecifierId <: id
+Node(id) :- OverrideSpecifier(id).
+.decl OverrideSpecifier(id: OverrideSpecifierId)
+.type StructuredDocumentationId <: id
+.decl StructuredDocumentation_text(id: StructuredDocumentationId, val: symbol)
+Node(id) :- StructuredDocumentation(id).
+.decl StructuredDocumentation(id: StructuredDocumentationId)
+// ======= FACTS =======
+SourceUnit(34).
+src(34, "0:182:0").
+SourceUnit_exportedSymbols(34, "Foo", 33).
+SourceUnit_sourceEntryKey(34, "test/samples/analyses/cfg/while.sol").
+SourceUnit_sourceListIndex(34, 0).
+SourceUnit_absolutePath(34, "test/samples/analyses/cfg/while.sol").
+SourceUnit_license(34, "", 0).
+parent(34, 1).
+PragmaDirective(1).
+src(1, "0:23:0").
+PragmaDirective_literals(1, "solidity", 0).
+PragmaDirective_literals(1, "0.8", 1).
+PragmaDirective_literals(1, ".17", 2).
+parent(34, 33).
+ContractDefinition(33).
+src(33, "25:156:0").
+ContractDefinition_linearizedBaseContracts(33, 33, 0).
+ContractDefinition_name(33, "Foo").
+ContractDefinition_scope(33, 34).
+ContractDefinition_kind(33, "contract").
+ContractDefinition_abstract(33, 0).
+ContractDefinition_fullyImplemented(33, 1).
+parent(33, 32).
+FunctionDefinition(32).
+src(32, "41:138:0").
+FunctionDefinition_scope(32, 33).
+FunctionDefinition_kind(32, "function").
+FunctionDefinition_name(32, "main").
+FunctionDefinition_virtual(32, 0).
+FunctionDefinition_visibility(32, "public").
+FunctionDefinition_stateMutability(32, "nonpayable").
+FunctionDefinition_isConstructor(32, 0).
+FunctionDefinition_parameters(32, 2).
+FunctionDefinition_returnParameters(32, 5).
+FunctionDefinition_overrideSpecifier(32, -1, 0).
+FunctionDefinition_body(32, 31, 1).
+parent(32, 2).
+ParameterList(2).
+src(2, "54:2:0").
+parent(32, 5).
+ParameterList(5).
+src(5, "72:6:0").
+ParameterList_parameters(5, 4, 0).
+parent(5, 4).
+VariableDeclaration(4).
+src(4, "73:4:0").
+VariableDeclaration_constant(4, 0).
+VariableDeclaration_indexed(4, 0).
+VariableDeclaration_name(4, "").
+VariableDeclaration_scope(4, 32).
+VariableDeclaration_stateVariable(4, 0).
+VariableDeclaration_storageLocation(4, "default").
+VariableDeclaration_visibility(4, "internal").
+VariableDeclaration_mutability(4, "mutable").
+VariableDeclaration_typeString(4, "uint256").
+VariableDeclaration_typeName(4, 3, 1).
+VariableDeclaration_overrideSpecifier(4, -1, 0).
+VariableDeclaration_value(4, -1, 0).
+parent(4, 3).
+ElementaryTypeName(3).
+src(3, "73:4:0").
+ElementaryTypeName_typeString(3, "uint256").
+ElementaryTypeName_name(3, "uint").
+ElementaryTypeName_stateMutability(3, "nonpayable").
+parent(32, 31).
+Block(31).
+src(31, "79:100:0").
+Block_statements(31, 9, 0).
+Block_statements(31, 13, 1).
+Block_statements(31, 28, 2).
+Block_statements(31, 30, 3).
+parent(31, 9).
+VariableDeclarationStatement(9).
+src(9, "83:10:0").
+VariableDeclarationStatement_assignments(9, 7, 0, 0).
+VariableDeclarationStatement_declarations(9, 7, 0).
+VariableDeclarationStatement_initialValue(9, 8, 1).
+parent(9, 7).
+VariableDeclaration(7).
+src(7, "83:6:0").
+VariableDeclaration_constant(7, 0).
+VariableDeclaration_indexed(7, 0).
+VariableDeclaration_name(7, "x").
+VariableDeclaration_scope(7, 31).
+VariableDeclaration_stateVariable(7, 0).
+VariableDeclaration_storageLocation(7, "default").
+VariableDeclaration_visibility(7, "internal").
+VariableDeclaration_mutability(7, "mutable").
+VariableDeclaration_typeString(7, "uint256").
+VariableDeclaration_typeName(7, 6, 1).
+VariableDeclaration_overrideSpecifier(7, -1, 0).
+VariableDeclaration_value(7, -1, 0).
+parent(7, 6).
+ElementaryTypeName(6).
+src(6, "83:4:0").
+ElementaryTypeName_typeString(6, "uint256").
+ElementaryTypeName_name(6, "uint").
+ElementaryTypeName_stateMutability(6, "nonpayable").
+parent(9, 8).
+Literal(8).
+src(8, "92:1:0").
+Literal_typeString(8, "int_const 1").
+Literal_kind(8, "number").
+Literal_hexValue(8, "31").
+Literal_value(8, "1").
+Literal_subdenomination(8, "", 0).
+ConstantExpression(8).
+parent(31, 13).
+VariableDeclarationStatement(13).
+src(13, "97:12:0").
+VariableDeclarationStatement_assignments(13, 11, 0, 0).
+VariableDeclarationStatement_declarations(13, 11, 0).
+VariableDeclarationStatement_initialValue(13, 12, 1).
+parent(13, 11).
+VariableDeclaration(11).
+src(11, "97:8:0").
+VariableDeclaration_constant(11, 0).
+VariableDeclaration_indexed(11, 0).
+VariableDeclaration_name(11, "sum").
+VariableDeclaration_scope(11, 31).
+VariableDeclaration_stateVariable(11, 0).
+VariableDeclaration_storageLocation(11, "default").
+VariableDeclaration_visibility(11, "internal").
+VariableDeclaration_mutability(11, "mutable").
+VariableDeclaration_typeString(11, "uint256").
+VariableDeclaration_typeName(11, 10, 1).
+VariableDeclaration_overrideSpecifier(11, -1, 0).
+VariableDeclaration_value(11, -1, 0).
+parent(11, 10).
+ElementaryTypeName(10).
+src(10, "97:4:0").
+ElementaryTypeName_typeString(10, "uint256").
+ElementaryTypeName_name(10, "uint").
+ElementaryTypeName_stateMutability(10, "nonpayable").
+parent(13, 12).
+Literal(12).
+src(12, "108:1:0").
+Literal_typeString(12, "int_const 0").
+Literal_kind(12, "number").
+Literal_hexValue(12, "30").
+Literal_value(12, "0").
+Literal_subdenomination(12, "", 0).
+ConstantExpression(12).
+parent(31, 28).
+WhileStatement(28).
+src(28, "114:47:0").
+WhileStatement_condition(28, 16).
+WhileStatement_body(28, 27).
+parent(28, 16).
+BinaryOperation(16).
+src(16, "121:6:0").
+BinaryOperation_typeString(16, "bool").
+BinaryOperation_operator(16, "<").
+BinaryOperation_leftExpression(16, 14).
+BinaryOperation_rightExpression(16, 15).
+BinaryOperation_userFunction(16, -1, 0).
+parent(16, 14).
+Identifier(14).
+src(14, "121:1:0").
+Identifier_typeString(14, "uint256").
+Identifier_name(14, "x").
+Identifier_referencedDeclaration(14, 7).
+parent(16, 15).
+Literal(15).
+src(15, "125:2:0").
+Literal_typeString(15, "int_const 10").
+Literal_kind(15, "number").
+Literal_hexValue(15, "3130").
+Literal_value(15, "10").
+Literal_subdenomination(15, "", 0).
+ConstantExpression(15).
+parent(28, 27).
+Block(27).
+src(27, "129:32:0").
+Block_statements(27, 20, 0).
+Block_statements(27, 26, 1).
+parent(27, 20).
+ExpressionStatement(20).
+src(20, "134:8:0").
+ExpressionStatement_expression(20, 19).
+parent(20, 19).
+Assignment(19).
+src(19, "134:8:0").
+Assignment_typeString(19, "uint256").
+Assignment_operator(19, "+=").
+Assignment_leftHandSide(19, 17).
+Assignment_rightHandSide(19, 18).
+parent(19, 17).
+Identifier(17).
+src(17, "134:3:0").
+Identifier_typeString(17, "uint256").
+Identifier_name(17, "sum").
+Identifier_referencedDeclaration(17, 11).
+parent(19, 18).
+Identifier(18).
+src(18, "141:1:0").
+Identifier_typeString(18, "uint256").
+Identifier_name(18, "x").
+Identifier_referencedDeclaration(18, 7).
+parent(27, 26).
+ExpressionStatement(26).
+src(26, "147:9:0").
+ExpressionStatement_expression(26, 25).
+parent(26, 25).
+Assignment(25).
+src(25, "147:9:0").
+Assignment_typeString(25, "uint256").
+Assignment_operator(25, "=").
+Assignment_leftHandSide(25, 21).
+Assignment_rightHandSide(25, 24).
+parent(25, 21).
+Identifier(21).
+src(21, "147:1:0").
+Identifier_typeString(21, "uint256").
+Identifier_name(21, "x").
+Identifier_referencedDeclaration(21, 7).
+parent(25, 24).
+BinaryOperation(24).
+src(24, "151:5:0").
+BinaryOperation_typeString(24, "uint256").
+BinaryOperation_operator(24, "+").
+BinaryOperation_leftExpression(24, 22).
+BinaryOperation_rightExpression(24, 23).
+BinaryOperation_userFunction(24, -1, 0).
+parent(24, 22).
+Identifier(22).
+src(22, "151:1:0").
+Identifier_typeString(22, "uint256").
+Identifier_name(22, "x").
+Identifier_referencedDeclaration(22, 7).
+parent(24, 23).
+Literal(23).
+src(23, "155:1:0").
+Literal_typeString(23, "int_const 1").
+Literal_kind(23, "number").
+Literal_hexValue(23, "31").
+Literal_value(23, "1").
+Literal_subdenomination(23, "", 0).
+ConstantExpression(23).
+parent(31, 30).
+Return(30).
+src(30, "165:10:0").
+Return_functionReturnParameters(30, 5).
+Return_expression(30, 29, 1).
+parent(30, 29).
+Identifier(29).
+src(29, "172:3:0").
+Identifier_typeString(29, "uint256").
+Identifier_name(29, "sum").
+Identifier_referencedDeclaration(29, 11).
+CompilerVersion(0, 8, 17).
+// ======= ANALYSIS RELS =======
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/analyses/calltree.dl 
+.decl callsDirectly(caller: FunctionDefinitionId, callee: FunctionDefinitionId)
+callsDirectly(caller, callee) :- 
+    FunctionDefinition(caller),
+    FunctionDefinition(callee),
+    FunctionCall(callId),
+    FunctionCall_expression(callId, exprId),
+    exprRefersTo(exprId, callee),
+    ancestor(caller, callId).
+
+.type CallPath = [ head: FunctionDefinitionId, tail: CallPath ]
+.functor isSubsequence(a: CallPath, b: CallPath):number stateful
+
+.decl callsPath(caller: FunctionDefinitionId, callee: FunctionDefinitionId, path: CallPath)
+
+// Base case - if caller has a function call that refers to callee
+callsPath(caller, callee, [caller, [callee, nil]]) :-
+    callsDirectly(caller, callee).
+
+// Calls is transitive
+callsPath(caller, callee, [caller, p]) :-
+    callsDirectly(caller, x),
+    callsPath(x, callee, p).
+
+callsPath(x, y, p1) <= callsPath(x, y, p2) :- @isSubsequence(p2, p1) = 1.
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/analyses/cfg/dominate.dl 
+.decl dominate(pred: id, succ: id)
+
+/// Dominate inherits from dominateStmt for statements
+dominate(pred, succ) :-
+    dominateStmt(pred, succ).
+
+/// If statement A dominates statement B, A dominates all expressions in B
+dominate(pred, succ) :-
+    Statement(pred),
+    Statement(B),
+    dominateStmt(pred, B),
+    ancestor(B, succ),
+    Expression(succ).
+
+/// All expressions "syntactically" inside a statement must evaluate before its
+/// conisdered "executed"
+dominate(pred, succ) :-
+    Statement(succ),
+    ancestor(succ, pred),
+    Expression(pred).
+
+/// All expressions "syntactically" inside another expression must finish evaluating
+/// before the parent expression has evaluated
+dominate(pred, succ) :-
+    Expression(succ),
+    ancestor(succ, pred),
+    Expression(pred).
+
+/// Assignment
+dominate(pred, succ) :-
+    Assignment(aid),
+    Assignment_leftHandSide(aid, succ),
+    Assignment_rightHandSide(aid, pred).
+
+/// BinaryOperation
+dominate(pred, succ) :-
+    BinaryOperation(boId),
+    BinaryOperation_leftExpression(boId, pred),
+    BinaryOperation_rightExpression(boId, succ).
+
+/// Conditional
+dominate(pred, succ) :-
+    Conditional(cId),
+    Conditional_condition(cId, pred),
+    Conditional_trueExpression(cId, succ).
+
+dominate(pred, succ) :-
+    Conditional(cId),
+    Conditional_condition(cId, pred),
+    Conditional_falseExpression(cId, succ).
+
+
+/// FunctionCall
+dominate(pred, succ) :-
+    FunctionCall(fcId),
+    FunctionCall_arguments(fcId, pred, i),
+    FunctionCall_arguments(fcId, succ, i + 1).
+
+/// IndexAccess
+dominate(pred, succ) :-
+    IndexAccess(iaId),
+    IndexAccess_baseExpression(aId, succ),
+    IndexAccess_indexExpression(iaId, pred, 1).
+
+/// IndexRangeAccess
+dominate(pred, succ) :-
+    IndexRangeAccess(iraId), 
+    IndexRangeAccess_baseExpression(iraId, succ),
+    IndexRangeAccess_startExpression(iraId, pred, 1).
+
+dominate(pred, succ) :-
+    IndexRangeAccess(iraId), 
+    IndexRangeAccess_baseExpression(iraId, succ),
+    IndexRangeAccess_endExpression(iraId, pred, 1).
+
+/// TupleExpression
+dominate(pred, succ) :-
+    TupleExpression(tId),
+    TupleExpression_components(tId, pred, i, _),
+    TupleExpression_components(tId, succ, i + 1, _).
+
+/// Domination is transitive
+dominate(pred, succ) :- dominate(pred, x), dominate(x, succ).
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/analyses/cfg/dominateStmt.dl 
+// Helper relation for expressing the CFG domination relation only between statements (and modifier invocations)
+.decl dominateStmt(pred: id, succ: id)
+
+// ForStatement
+// Initialization dominates the body when present
+dominateStmt(pred, succ) :-
+    ForStatement(fsId),
+    ForStatement_initializationExpression(fsId, pred, 1),
+    ForStatement_body(fsId, succ).
+
+// Initialization dominates condition check when both present 
+dominateStmt(pred, succ) :-
+    ForStatement(fsId),
+    ForStatement_initializationExpression(fsId, pred, 1),
+    ForStatement_condition(fsId, succ, 1).
+
+// Initialization dominates loop expr when both present 
+dominateStmt(pred, succ) :-
+    ForStatement(fsId),
+    ForStatement_initializationExpression(fsId, pred, 1),
+    ForStatement_loopExpression(fsId, succ, 1).
+
+// All stmts dominating the for dominate the init statement
+dominateStmt(pred, succ) :-
+    ForStatement(fsId),
+    ForStatement_initializationExpression(fsId, succ, 1),
+    dominateStmt(pred, fId).
+
+// No init statement - all stmts dominating the for dominate the body
+dominateStmt(pred, succ) :-
+    ForStatement(fsId),
+    ForStatement_initializationExpression(fsId, _, 0),
+    ForStatement_body(fsId, succ),
+    dominateStmt(pred, fId).
+
+// TryStatement
+dominateStmt(pred, succ) :-
+    TryStatement(tId),
+    dominateStmt(pred, tId),
+    TryStatement_clauses(tId, cId, _),
+    TryCatchClause_block(cId, succ).
+
+// BlockStatement
+dominateStmt(pred, succ) :-
+    Block(bId),
+    dominateStmt(pred, bId),
+    Block_statements(bId, succ, 0).
+
+dominateStmt(pred, succ) :-
+    Block(bId),
+    Block_statements(bId, pred, i),
+    Block_statements(bId, succ, i + 1).
+
+// UncheckedBlockStatement
+dominateStmt(pred, succ) :-
+    UncheckedBlock(bId),
+    dominateStmt(pred, bId),
+    UncheckedBlock_statements(bId, succ, 0).
+
+dominateStmt(pred, succ) :-
+    UncheckedBlock(bId),
+    UncheckedBlock_statements(bId, pred, i),
+    UncheckedBlock_statements(bId, succ, i + 1).
+
+// WhileStatement
+dominateStmt(pred, succ) :-
+    WhileStatement_body(wId, succ),
+    dominateStmt(pred, wId).
+
+// IfStatement
+dominateStmt(pred, succ) :-
+    IfStatement_trueBody(ifId, succ),
+    dominateStmt(pred, ifId).
+
+dominateStmt(pred, succ) :-
+    IfStatement_falseBody(ifId, succ, 1),
+    dominateStmt(pred, ifId).
+
+// DoWhile statement
+dominateStmt(pred, succ) :-
+    DoWhileStatement_body(dwId, succ),
+    dominateStmt(pred, dwId).
+
+// ModifierInvocations
+dominateStmt(pred, succ) :-
+    FunctionDefinition(id),
+    FunctionDefinition_modifiers(id, pred, i),
+    modifierInvocation_isModifier(pred),
+    FunctionDefinition_modifiers(id, succ, i + 1),
+    modifierInvocation_isModifier(pred).
+
+// ModifierInvocations
+dominateStmt(pred, succ) :-
+    FunctionDefinition_body(id, succ, 1),
+    FunctionDefinition_modifiers(id, pred, i),
+    modifierInvocation_isModifier(pred).
+
+// Transitivity
+dominateStmt(pred, succ) :-
+    dominateStmt(pred, x),
+    dominateStmt(x, succ).
+
+// @todo Base constructors
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/analyses/common.dl 
+// Compute all pairs of nodes (ancestorId, descendantId) where descendantId is a descendant ot ancestorId in the AST.
+.decl ancestor(ancestorId: id, descendantId: id)
+
+ancestor(x, y) :- parent(x, y).
+ancestor(x, y) :- parent(x, z), ancestor(z, y).
+
+// Helper to get the name of a state var with a given id
+.decl stateVar(id: id, name: symbol)
+stateVar(id, name) :- VariableDeclaration(id), VariableDeclaration_name(id, name), VariableDeclaration_stateVariable(id, 1).
+
+// Helper to get the name of a function with a given id
+.decl function(id: id, name: symbol)
+function(id, name) :- FunctionDefinition(id), FunctionDefinition_name(id, name).
+
+// Helper to get the name of a function with a given id in a given contract (contractId)
+.decl functionIn(id: FunctionDefinitionId, name: symbol, contractId: id)
+functionIn(id, name, contractId) :- function(id, name), FunctionDefinition_scope(id, contractId).
+
+// Helper to get the name of a contract with a given id
+.decl contract(id: id, name: symbol)
+contract(id, name) :- ContractDefinition(id), ContractDefinition_name(id, name).
+
+/// Specifies that a childContractId inherits from baseContractId (or is the same contract)
+.decl inherits(childContractId: ContractDefinitionId, baseContractId: ContractDefinitionId)
+inherits(childContractId, baseContractId) :- ContractDefinition(childContractId), childContractId = baseContractId.
+inherits(childContractId, baseContractId) :-
+    ContractDefinition(childContractId),
+    ContractDefinition(baseContractId),
+    ContractDefinition_linearizedBaseContracts(childContractId, baseContractId, _).
+
+/// Specifies that a method with `methodId` belongs to contract `contractId` or one of its bases.
+.decl method(methodId: FunctionDefinitionId, contractId: ContractDefinitionId)
+method(methodId, contractId) :- inherits(contractId, baseId), functionIn(methodId, _, baseId).
+
+.decl ModifierInvocation_vReferencedDeclaration(mId: id, rId: id)
+ModifierInvocation_vReferencedDeclaration(mId, rId) :-
+    ModifierInvocation(mId),
+    ModifierInvocation_modifierName(mId, mNameId),
+    exprRefersTo(mNameId, rId).
+
+.decl modifierInvocation_isModifier(mid: id)
+modifierInvocation_isModifier(mId) :-
+    ModifierInvocation(mId),
+    ModifierInvocation_vReferencedDeclaration(mId, rId),
+    ModifierDefinition(rId).
+
+
+// Specifies that exprId is an Identifier, IdentifierPath or MemberAccess that refers to defId
+.decl exprRefersTo(exprId: id, defId: id)
+exprRefersTo(exprId, defId) :-
+    Identifier(exprId),
+    Identifier_referencedDeclaration(exprId, defId).
+
+exprRefersTo(exprId, defId) :-
+    IdentifierPath(exprId),
+    IdentifierPath_referencedDeclaration(exprId, defId).
+
+exprRefersTo(exprId, defId) :-
+    MemberAccess(exprId),
+    MemberAccess_referencedDeclaration(exprId, defId).
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/analyses/state_var_modified.dl 
+// Compute whether a state var with a given id is modified in a LHS expression
+.decl stateVarModifiedInLHS(varId: id, exprId: id)
+
+// Simple reference to the variable
+stateVarModifiedInLHS(varId, exprId) :-
+    Identifier(exprId),
+    Identifier_referencedDeclaration(exprId, varId).
+
+// A member access referring to the variable (e.g. this.x, Foo.x)
+stateVarModifiedInLHS(varId, exprId) :-
+    MemberAccess(exprId),
+    MemberAccess_referencedDeclaration(exprId, varId).
+
+// A struct member access x.foo
+stateVarModifiedInLHS(varId, exprId) :-
+    MemberAccess(exprId),
+    MemberAccess_expression(exprId, subExprId),
+    stateVarModifiedInLHS(varId, subExprId).
+
+// An index into the state var x[a]
+stateVarModifiedInLHS(varId, exprId) :-
+    IndexAccess(exprId),
+    IndexAccess_baseExpression(exprId, baseExprId),
+    stateVarModifiedInLHS(varId, baseExprId).
+ 
+// An tuple expression
+stateVarModifiedInLHS(varId, exprId) :-
+    TupleExpression(exprId), 
+    TupleExpression_isInlineArray(exprId, 0),
+    TupleExpression_components(exprId, componentId, _, _),
+    componentId >= 0,
+    stateVarModifiedInLHS(varId, componentId).
+
+// Compute whether the state var identifier by varId is mutated in the assignment identified by assignmentId
+.decl varModifiedInLHSOfAssignment(varId: id, assignmentId: id)
+
+// Simple assignment case
+varModifiedInLHSOfAssignment(varId, assignmentId) :-
+    Assignment(assignmentId),
+    Assignment_leftHandSide(assignmentId, lhsId),
+    stateVarModifiedInLHS(varId, lhsId).
+
+// Compute whether the state var "varContractName.stateVarName" is changed  inside the method "funContractName.funName"
+.decl stateVarAssignedIn(varContractName: symbol, stateVarName: symbol, funContractName: symbol, funName: symbol)
+
+stateVarAssignedIn(varContractName, stateVarName, funContractName, funName) :-
+    contract(varContractId, varContractName),
+    contract(funContractId, funContractName),
+    stateVar(sId, stateVarName),
+    ancestor(varContractId, sId),
+    function(fId, funName),
+    ancestor(funContractId, fId),
+    Assignment(assignId),
+    ancestor(fId, assignId),
+    varModifiedInLHSOfAssignment(sId, assignId).
+// ======= DETECTORS RELS =======
+////// /home/dimo/work/consensys/sol-datalog/dist/lib/detectors/msg_sender_inconsistency.dl 
+/// Detector for inconsistent use of msg.detector and _msgDetector(). Should
+/// handle inheritance gracefully.
+
+/// HELPERS
+
+// Computes all function with id funId that have `msg.sender` expression with id eId
+.decl funHasMsgSenderBuiltin(funId: id, eId: id)
+funHasMsgSenderBuiltin(funId, eId) :-
+    MemberAccess(eId),
+    MemberAccess_expression(eId, baseId),
+    MemberAccess_memberName(eId, "sender"),
+    Identifier_name(baseId, "msg"),
+    ancestor(funId, eId).
+
+// Computes all function with id funId that have `_msgSender` expression with id eId
+.decl funHasMsgSenderCall(funId: id, eId: id)
+funHasMsgSenderCall(funId, eId) :-
+    Identifier_name(eId, "_msgSender"),
+    ancestor(funId, eId).
+

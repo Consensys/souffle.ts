@@ -47,3 +47,41 @@ for (const dl of searchRecursive("test/samples/", (name) => name.endsWith(".dl")
         });
     });
 }
+
+const TRIPPLE_TESTS = ["test/samples/large.dl"];
+
+describe(`Instances produce the same output`, () => {
+    for (const test of TRIPPLE_TESTS) {
+        describe(`Sample ${test}`, () => {
+            let expectedOut: string;
+
+            beforeAll(() => {
+                expectedOut = fse.readFileSync(test.slice(0, -3) + ".out", { encoding: "utf-8" });
+            });
+
+            for (const mode of ["csv", "sqlite", "sqlite2csv"]) {
+                it(`${mode} Instance works`, (done) => {
+                    let stdOut = "";
+                    let stdErr = "";
+
+                    const proc = spawn(EXECUTABLE, [test, "--instance", "csv"]);
+
+                    proc.stdout.on("data", (data) => {
+                        stdOut += data.toString();
+                    });
+
+                    proc.stderr.on("data", (data) => {
+                        stdErr += data.toString();
+                    });
+
+                    proc.on("exit", (code) => {
+                        expect(stdErr.trimEnd()).toEqual("");
+                        expect(code).toEqual(0);
+                        expect(stdOut.trimEnd()).toEqual(expectedOut);
+                        done();
+                    });
+                });
+            }
+        });
+    }
+});
