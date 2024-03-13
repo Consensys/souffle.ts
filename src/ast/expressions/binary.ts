@@ -29,7 +29,7 @@ export class BinaryOperator extends Expression {
     }
 
     pp(): string {
-        return `(${this.left.pp()} ${this.op} ${this.right.pp()})`;
+        return `${this.left.pp()} ${this.op} ${this.right.pp()}`;
     }
 
     children(): Iterable<Node> {

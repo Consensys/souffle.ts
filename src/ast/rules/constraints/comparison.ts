@@ -15,7 +15,7 @@ export class Comparison extends Constraint {
     }
 
     pp(): string {
-        return `(${this.lhs.pp()} ${this.op} ${this.rhs.pp()})`;
+        return `${this.lhs.pp()} ${this.op} ${this.rhs.pp()}`;
     }
 
     children(): Iterable<Node> {

@@ -24,7 +24,7 @@ export class Rule extends Declaration {
                 .map(([num, nums]) => `${num}: (${nums.map((x) => `${x}`).join(", ")})`)
                 .join(", ");
         }
-        return `${indent}${this.head.pp()} :- ${this.body.pp()}.${queryPlanStr}`;
+        return `${indent}${this.head.pp()} :- ${this.body.pp().slice(1, -1)}.${queryPlanStr}`;
     }
 
     children(): Iterable<Node> {

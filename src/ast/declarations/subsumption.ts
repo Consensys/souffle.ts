@@ -25,7 +25,7 @@ export class Subsumption extends Declaration {
                 .join(", ");
         }
 
-        return `${indent}${this.dominatedHead.pp()} <= ${this.dominatingHead.pp()} :- ${this.body.pp()}.${queryPlanStr}`;
+        return `${indent}${this.dominatedHead.pp()} <= ${this.dominatingHead.pp()} :- ${this.body.pp().slice(1, -1)}.${queryPlanStr}`;
     }
 
     children(): Iterable<Node> {

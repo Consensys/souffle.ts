@@ -13,7 +13,7 @@ export class UnaryOperator extends Expression {
     }
 
     pp(): string {
-        return `(${this.op}${this.subExpr.pp()})`;
+        return `${this.op}${this.subExpr.pp()}`;
     }
 
     children(): Iterable<Node> {
