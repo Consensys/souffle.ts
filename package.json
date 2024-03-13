@@ -1,7 +1,7 @@
 {
     "name": "soufle.ts",
     "version": "0.0.0",
-    "description": "Wrapper library around the Souffle Datalog Language",
+    "description": "Typed bindings and helpers for using the Souffle Datalog Engine",
     "keywords": [],
     "files": [
         "dist"

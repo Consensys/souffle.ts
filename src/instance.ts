@@ -6,7 +6,7 @@ import { assert, chunk, searchRecursive } from "./utils";
 import { parse } from "csv-parse/sync";
 import sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
-import { NumberT, RecordT, SubT, SymbolT, DatalogType, TypeEnv, AliasT } from "./types";
+import { NumberT, RecordT, SubT, SymbolT, DatalogType, TypeEnv, AliasT, ADTT } from "./types";
 import { Relation, getRelations } from "./relation";
 import { Fact, FieldVal, ppFieldVal } from "./fact";
 import * as ast from "./ast";
@@ -299,6 +299,15 @@ export class SouffleSQLiteInstance extends SouffleInstance implements SouffleSQL
 
     constructor(datalog: string, soDir?: string) {
         super(datalog, "sqlite", soDir);
+
+        // Issue a warning if we try to use this on DL with unsupported types
+        for (const typ of this.env.types()) {
+            if (typ instanceof RecordT || typ instanceof ADTT) {
+                console.error(
+                    `WARNING: SouffleSQLiteInstance doesn't fully support Record and ADT types due to https://github.com/souffle-lang/souffle/issues/2457`
+                );
+            }
+        }
     }
 
     async run(outputRelations: string[]): Promise<void> {

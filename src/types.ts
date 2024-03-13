@@ -75,6 +75,12 @@ export class TypeEnv {
         return res as DatalogType;
     }
 
+    *types(): Generator<DatalogType> {
+        for (const t of this.env.values()) {
+            yield t;
+        }
+    }
+
     static buildTypeEnv(prog: ast.Program): TypeEnv {
         const res = new TypeEnv();
 
