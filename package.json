@@ -14,8 +14,10 @@
     "scripts": {
         "clean": "rm -rf dist/ src/parser/parser.ts",
         "transpile": "tsc",
-        "build-parser": "tspegjs -o src/parser/parser.ts --custom-header-file src/parser/header.ts --cache src/parser/grammar.peggy",
-        "build": "npm run clean && npm run build-parser && npm run transpile && chmod u+x dist/bin/cli.js",
+        "build-parser": "jison src/parser/souffle.jison -o src/parser/souffle_parser_gen.js -m commonjs && cp src/parser/souffle_parser_gen.js dist/parser/souffle_parser_gen.js",
+        "build-expr-parser": "jison src/parser/souffle_value.jison -o src/parser/souffle_value_parser_gen.js -m commonjs && cp src/parser/souffle_value_parser_gen.js dist/parser/souffle_value_parser_gen.js",
+        "build-parsers": "npm run build-parser && npm run build-expr-parser",
+        "build": "npm run clean && npm run transpile && npm run build-parsers && chmod u+x dist/bin/cli.js",
         "lint": "eslint src/ test/ --ext=ts",
         "lint:fix": "eslint src/ test/ --ext=ts --fix",
         "test": "jest --coverage",
@@ -23,7 +25,10 @@
     },
     "dependencies": {
         "commander": "^12.0.0",
-        "fs-extra": "^11.2.0"
+        "fs-extra": "^11.2.0",
+        "sqlite": "^5.1.1",
+        "sqlite3": "^5.1.7",
+        "csv-parse": "^5.5.3"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
@@ -36,11 +41,10 @@
         "eslint-plugin-prettier": "^5.1.3",
         "expect": "^29.7.0",
         "jest": "^29.7.0",
-        "peggy": "^2.0.1",
+        "jison": "^0.4.18",
         "prettier": "^3.2.5",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
-        "ts-pegjs": "^3.1.0",
         "typescript": "^5.3.3"
     },
     "homepage": "https://consensys.github.io/soufle.ts",
