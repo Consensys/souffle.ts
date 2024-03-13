@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import fse from "fs-extra";
+import {
+    SouffleCSVInstance,
+    SouffleCSVToSQLInstance,
+    SouffleInstance,
+    SouffleSQLiteInstance
+} from "../instance";
 
 const pkg = require("../../package.json");
 
@@ -17,9 +23,7 @@ async function main() {
 
     program
         .option("--stdin", "Read input from STDIN instead of files")
-        .option("--from-ast", "Treat an input as JSON AST")
-        .option("--ast", "Print JSON AST")
-        .option("--print", "Print Datalog source");
+        .option("--instance", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
 
     program.parse(process.argv);
 
@@ -46,25 +50,34 @@ async function main() {
         }
     }
 
-    if (options.fromAst) {
-        /**
-         * @todo Implement treating an input as JSON AST
-         */
+    const dl = [...fileMap.values()].join("\n");
+    let instance: SouffleInstance;
+
+    if (options.instance === "csv") {
+        instance = new SouffleCSVInstance(dl);
+    } else if (options.instance === "sqlite") {
+        instance = new SouffleSQLiteInstance(dl);
+    } else if (options.instane === "csv2sqilte") {
+        instance = new SouffleCSVToSQLInstance(dl);
+    } else {
+        throw new Error(`Unknown instance`);
     }
 
-    if (options.ast) {
-        console.log("<JSON AST>");
+    const relations = [...instance.relations()];
 
-        return;
+    await instance.run(relations.map((reln) => reln.name));
+    const res = await instance.allFacts();
+
+    for (const [relnName, facts] of res) {
+        const rel = instance.relation(relnName);
+        console.log(`/// ${relnName}`);
+        console.log(`===============`);
+        console.log(rel.fields.map(([field]) => field).join(` `));
+
+        for (const fact of facts) {
+            console.log(fact.toCSVRow().join("    "));
+        }
     }
-
-    if (options.print) {
-        console.log("<SOURCE>");
-
-        return;
-    }
-
-    throw new Error("Provide one of output options");
 }
 
 main()

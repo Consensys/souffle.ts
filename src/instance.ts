@@ -24,6 +24,7 @@ export interface SouffleInstanceI {
     relation(name: string): Relation;
     relations(): Iterable<Relation>;
     relationFacts(name: string): Promise<Fact[]>;
+    allFacts(): Promise<OutputRelations>;
 }
 
 export interface SouffleSQLInstanceI extends SouffleInstanceI {
@@ -31,7 +32,7 @@ export interface SouffleSQLInstanceI extends SouffleInstanceI {
     dbName(): string;
 }
 
-export abstract class SouffleInstance {
+export abstract class SouffleInstance implements SouffleInstanceI {
     protected tmpDir!: string;
     protected inputFile!: string;
     protected outputFiles!: string[];
@@ -114,22 +115,33 @@ export abstract class SouffleInstance {
         assert(res !== undefined, `Unknown relation ${name}`);
         return res;
     }
+
+    abstract relationFacts(name: string): Promise<Fact[]>;
+    abstract allFacts(): Promise<OutputRelations>;
 }
 
-export class BaseSouffleCSVInstance extends SouffleInstance {
+export class SouffleCSVInstance extends SouffleInstance {
     private _results: OutputRelations | undefined;
 
     constructor(datalog: string, soDir?: string) {
         super(datalog, "csv", soDir);
     }
 
-    results(): OutputRelations {
+    async allFacts(): Promise<OutputRelations> {
         assert(this.success, `Instance not run yet`);
         if (!this._results) {
             this._results = this.readProducedCsvFiles();
         }
 
         return this._results;
+    }
+
+    async relationFacts(name: string): Promise<Fact[]> {
+        const res = await this.allFacts();
+        const facts = res.get(name);
+
+        assert(facts !== undefined, `Unknown relation ${name}`);
+        return facts;
     }
 
     private parseCsv(content: string, delimiter = ","): string[][] {
@@ -157,16 +169,6 @@ export class BaseSouffleCSVInstance extends SouffleInstance {
         }
 
         return relMap;
-    }
-}
-
-export class SouffleCSVInstance extends BaseSouffleCSVInstance implements SouffleInstanceI {
-    async relationFacts(name: string): Promise<Fact[]> {
-        const res = this.results();
-        const facts = res.get(name);
-
-        assert(facts !== undefined, `Unknown relation ${name}`);
-        return facts;
     }
 }
 
@@ -214,7 +216,7 @@ function fieldValToSQLVal(val: FieldVal, typ: DatalogType): string {
     throw new Error(`NYI datalogToSQLType(${typ})`);
 }
 
-export class SouffleCSVToSQLInstance extends BaseSouffleCSVInstance implements SouffleSQLInstanceI {
+export class SouffleCSVToSQLInstance extends SouffleCSVInstance implements SouffleSQLInstanceI {
     private _db: Database<sqlite3.Database, sqlite3.Statement> | undefined;
     private _dbName: string | undefined;
 
@@ -323,5 +325,18 @@ export class SouffleSQLiteInstance extends SouffleInstance implements SouffleSQL
 
     async getSQL(sql: string): Promise<any[]> {
         return await this.db.all(sql);
+    }
+
+    async allFacts(): Promise<OutputRelations> {
+        assert(this.success, `Instance not run yet`);
+        const res: OutputRelations = new Map();
+
+        for (const reln of this._relations.values()) {
+            const rawRes = await this.db.all(`SELECT * from ${name}`);
+
+            res.set(reln.name, Fact.fromSQLRows(reln, rawRes));
+        }
+
+        return res;
     }
 }
