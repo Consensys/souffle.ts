@@ -3,18 +3,23 @@ import expect from "expect";
 import fse from "fs-extra";
 import { searchRecursive } from "../src/utils";
 
-const EXECUTABLE = "soufle-ts";
+const EXECUTABLE = "souffle-ts";
 
-for (const dl of searchRecursive("test/samples/", (name) => name.endsWith(".dl"))) {
-    describe(`Sample ${dl}`, () => {
+const samples = searchRecursive("test/samples/", (name) => name.endsWith(".dl"));
+
+for (const sample of samples) {
+    describe(sample, () => {
         let exitCode: number | null;
-        let stdOut = "";
+
         let expectedOut: string;
+
+        let stdOut = "";
         let stdErr = "";
 
         beforeAll((done) => {
-            const proc = spawn(EXECUTABLE, [dl]);
-            expectedOut = fse.readFileSync(dl.slice(0, -2) + "out", { encoding: "utf-8" });
+            const proc = spawn(EXECUTABLE, [sample]);
+
+            expectedOut = fse.readFileSync(sample.slice(0, -2) + "out", { encoding: "utf-8" });
 
             proc.stdout.on("data", (data) => {
                 stdOut += data.toString();
@@ -52,7 +57,7 @@ const TRIPPLE_TESTS = ["test/samples/large.dl"];
 
 describe(`Instances produce the same output`, () => {
     for (const test of TRIPPLE_TESTS) {
-        describe(`Sample ${test}`, () => {
+        describe(test, () => {
             let expectedOut: string;
 
             beforeAll(() => {
@@ -60,7 +65,7 @@ describe(`Instances produce the same output`, () => {
             });
 
             for (const mode of ["csv", "sqlite", "sqlite2csv"]) {
-                it(`${mode} Instance works`, (done) => {
+                it(`${mode} instance works`, (done) => {
                     let stdOut = "";
                     let stdErr = "";
 
@@ -78,6 +83,7 @@ describe(`Instances produce the same output`, () => {
                         expect(stdErr.trimEnd()).toEqual("");
                         expect(code).toEqual(0);
                         expect(stdOut.trimEnd()).toEqual(expectedOut);
+
                         done();
                     });
                 });

@@ -12,7 +12,7 @@ export class FunctorCall extends Expression {
     }
 
     pp(): string {
-        return `@${this.name}(${this.args.map((a) => a.pp()).join(", ")})`;
+        return `${this.builtin ? this.name : "@" + this.name}(${this.args.map((a) => a.pp()).join(", ")})`;
     }
 
     children(): Iterable<Node> {

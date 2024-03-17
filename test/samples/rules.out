@@ -1,0 +1,24 @@
+/// A
+===============
+x y
+/// B
+===============
+x y
+/// C
+===============
+x y
+/// CanRenovate
+===============
+person building
+/// Heritage
+===============
+building
+/// Housemate
+===============
+personA personB
+/// LivesAt
+===============
+person building
+/// Owner
+===============
+person building

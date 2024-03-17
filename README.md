@@ -1,7 +1,7 @@
-[![NodeJS CI](https://github.com/Consensys/soufle.ts/actions/workflows/ci.yaml/badge.svg)](https://github.com/Consensys/soufle.ts/actions/workflows/ci.yaml)
+[![NodeJS CI](https://github.com/Consensys/souffle.ts/actions/workflows/ci.yaml/badge.svg)](https://github.com/Consensys/souffle.ts/actions/workflows/ci.yaml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# soufle.ts
+# souffle.ts
 
 Wrapper library around the [Soufflé Datalog Language](https://souffle-lang.github.io/).
 
@@ -10,13 +10,13 @@ Wrapper library around the [Soufflé Datalog Language](https://souffle-lang.gith
 Package could be installed globally via following command:
 
 ```bash
-npm install -g soufle.ts
+npm install -g souffle.ts
 ```
 
 Also it can be installed as the dependency:
 
 ```bash
-npm install --save soufle.ts
+npm install --save souffle.ts
 ```
 
 ## Development installation
@@ -32,8 +32,8 @@ npm install --save soufle.ts
 Clone repository, install and link:
 
 ```bash
-git clone https://github.com/Consensys/soufle.ts.git
-cd soufle.ts/
+git clone https://github.com/Consensys/souffle.ts.git
+cd souffle.ts/
 npm install
 npm link
 soufle-ts --version

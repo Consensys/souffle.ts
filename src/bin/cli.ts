@@ -7,6 +7,7 @@ import {
     SouffleInstance,
     SouffleSQLiteInstance
 } from "../instance";
+import { parseProgram } from "../parser";
 
 const pkg = require("../../package.json");
 
@@ -14,7 +15,7 @@ async function main() {
     const program = new Command();
 
     program
-        .name("soufle-ts")
+        .name("souffle-ts")
         .description(pkg.description)
         .version(pkg.version, "-v, --version", "Print package version")
         .helpOption("-h, --help", "Print help message");
@@ -23,6 +24,7 @@ async function main() {
 
     program
         .option("--stdin", "Read input from STDIN instead of files")
+        .option("--parse", "Print AST of parsed Datalog source and exit")
         .option("--instance <type>", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
 
     program.parse(process.argv);
@@ -51,6 +53,18 @@ async function main() {
     }
 
     const dl = [...fileMap.values()].join("\n");
+
+    if (options.parse) {
+        const ast = parseProgram(dl);
+
+        /**
+         * @todo Introduce JSON AST
+         */
+        console.log(ast);
+
+        return;
+    }
+
     let instance: SouffleInstance;
 
     if (options.instance === "csv") {
@@ -60,19 +74,21 @@ async function main() {
     } else if (options.instane === "csv2sqilte") {
         instance = new SouffleCSVToSQLInstance(dl);
     } else {
-        throw new Error(`Unknown instance`);
+        throw new Error("Unknown instance");
     }
 
     const relations = [...instance.relations()];
 
     await instance.run(relations.map((reln) => reln.name));
+
     const res = await instance.allFacts();
 
     for (const [relnName, facts] of res) {
         const rel = instance.relation(relnName);
+
         console.log(`/// ${relnName}`);
-        console.log(`===============`);
-        console.log(rel.fields.map(([field]) => field).join(` `));
+        console.log("===============");
+        console.log(rel.fields.map(([field]) => field).join(" "));
 
         for (const fact of facts) {
             console.log(fact.toCSVRow().join("    "));

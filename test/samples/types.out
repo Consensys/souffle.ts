@@ -1,0 +1,36 @@
+/// A
+===============
+x
+$Number(10)
+$Add($Number(10), $Imaginary)
+$Add($Number(10), $Variable("x"))
+$Number(11)
+$Number(12)
+$Number(13)
+$Number(14)
+$Number(15)
+$Number(16)
+$Number(17)
+$Number(18)
+$Number(19)
+$Number(20)
+/// B
+===============
+x
+nil
+[1, nil]
+[2, [3, nil]]
+/// Magic
+===============
+x y z
+-1    1    2.718
+/// Name
+===============
+n
+Hans
+Gretl
+/// Translate
+===============
+n o
+Hans    1
+Gretl    2

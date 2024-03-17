@@ -2,6 +2,7 @@
 /* tslint:disable */
 
 const ast = require("../ast");
+const utils = require("../utils")
 
 function lexError(err) {
   throw new Error(err);
@@ -468,7 +469,7 @@ type_decl
       if ($4.length > 1) {
         $$ = new ast.UnionType($2, $4, @$);
       } else {
-        assert($4.length == 1);
+        utils.assert($4.length == 1);
         $$ = new ast.AliasType($2, $4[0], @$);
       }
     }

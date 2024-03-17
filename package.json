@@ -1,5 +1,5 @@
 {
-    "name": "soufle.ts",
+    "name": "souffle.ts",
     "version": "0.1.0",
     "description": "Typed bindings and helpers for using the Souffle Datalog Engine",
     "keywords": [],
@@ -9,7 +9,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "bin": {
-        "soufle-ts": "dist/bin/cli.js"
+        "souffle-ts": "dist/bin/cli.js"
     },
     "scripts": {
         "clean": "rm -rf dist/ src/parser/parser.ts",
@@ -28,15 +28,15 @@
         "fs-extra": "^11.2.0",
         "sqlite": "^5.1.1",
         "sqlite3": "^5.1.7",
-        "csv-parse": "^5.5.3"
+        "csv-parse": "^5.5.5"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
         "@types/jest": "^29.5.12",
-        "@types/node": "^20.11.17",
-        "@typescript-eslint/eslint-plugin": "^7.0.1",
-        "@typescript-eslint/parser": "^7.0.1",
-        "eslint": "^8.56.0",
+        "@types/node": "^20.11.27",
+        "@typescript-eslint/eslint-plugin": "^7.2.0",
+        "@typescript-eslint/parser": "^7.2.0",
+        "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.1.3",
         "expect": "^29.7.0",
@@ -45,7 +45,7 @@
         "prettier": "^3.2.5",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
-        "typescript": "^5.3.3"
+        "typescript": "^5.4.2"
     },
     "homepage": "https://consensys.github.io/soufle.ts",
     "bugs": "https://github.com/ConsenSys/soufle.ts/issues",

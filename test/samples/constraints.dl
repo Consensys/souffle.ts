@@ -1,0 +1,23 @@
+// https://souffle-lang.github.io/constraints
+
+.decl stringTable(t:symbol)
+.decl substringTable(t:symbol)
+.decl outputData(substr:symbol, str:symbol)
+// .output outputData
+outputData(x,y) :- substringTable(x), stringTable(y), contains(x,y).
+stringTable("aaaa").
+stringTable("abba").
+stringTable("bcab").
+stringTable("bdab").
+substringTable("a").
+substringTable("ab").
+substringTable("cab").
+
+.decl inputData(t:symbol)
+.decl outputData(t:symbol)
+// .output outputData
+outputData(x) :- inputData(x), match("a.*",x).
+inputData("aaaa").
+inputData("abba").
+inputData("bcab").
+inputData("bdab").

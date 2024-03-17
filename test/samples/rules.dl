@@ -1,0 +1,21 @@
+// https://souffle-lang.github.io/rules#negation-in-rules
+.decl Owner(person: symbol, building: symbol)
+.decl Heritage(building: symbol)
+.decl CanRenovate(person: symbol, building: symbol)
+
+CanRenovate(person, building) :- Owner(person, building), !Heritage(building).
+
+// https://souffle-lang.github.io/rules#multiple-heads
+.decl A(x: number, y: number)
+.decl B(x: number, y: number)
+.decl C(x: number, y: number)
+
+A(x,y), C(x,y) :- B(x,y). 
+
+// https://souffle-lang.github.io/rules#disjunction
+.decl Housemate(personA: symbol, personB: symbol)
+.decl LivesAt(person: symbol, building: symbol)
+
+LivesAt(person, building) :-
+    Owner(owner, building),
+    ( person=owner ; Housemate(owner, person) ).
