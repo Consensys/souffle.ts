@@ -23,7 +23,9 @@ npm install --save soufle.ts
 
 ### Prerequisites
 
-Preinstall NodeJS of [compatible version](/.nvmrc). If there is a need to run different NodeJS versions, consider using [NVM](https://github.com/nvm-sh/nvm) or similar tool for your platform.
+1. Preinstall NodeJS of [compatible version](/.nvmrc). If there is a need to run different NodeJS versions, consider using [NVM](https://github.com/nvm-sh/nvm) or similar tool for your platform.
+
+2. Install [Souffle](https://github.com/souffle-lang/souffle).
 
 ### Clone and build
 
