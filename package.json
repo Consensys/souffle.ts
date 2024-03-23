@@ -1,6 +1,6 @@
 {
     "name": "souffle.ts",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Typed bindings and helpers for using the Souffle Datalog Engine",
     "keywords": [],
     "files": [
