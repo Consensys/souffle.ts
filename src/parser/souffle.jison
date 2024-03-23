@@ -585,7 +585,7 @@ relation_decl
       $$ = [];
 
       for (const name of $2) {
-        $$.push(new ast.Relation(name, $3, new Set($4), $5));
+        $$.push(new ast.RelationDecl(name, $3, new Set($4), $5));
       }
     }
   | DECL IDENT[delta] EQUALS DEBUG_DELTA LPAREN IDENT[name] RPAREN relation_tags
@@ -774,7 +774,7 @@ dependency_list
 fact
   : atom DOT_TOK
     {
-      $$ = new ast.Fact($1, @$);
+      $$ = new ast.FactDecl($1, @$);
     }
   ;
 

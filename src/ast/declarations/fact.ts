@@ -2,7 +2,7 @@ import { Node, Src } from "../node";
 import { Atom } from "../rules";
 import { Declaration } from "./declaration";
 
-export class Fact extends Declaration {
+export class FactDecl extends Declaration {
     constructor(
         public readonly atom: Atom,
         src: Src
