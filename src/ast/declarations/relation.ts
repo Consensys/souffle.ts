@@ -16,7 +16,7 @@ export enum RelationTags {
 
 export type RelationChoiceDomain = string | string[];
 
-export class Relation extends Declaration {
+export class RelationDecl extends Declaration {
     constructor(
         public readonly name: string,
         public readonly args: Array<[string, Type]>,

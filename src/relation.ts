@@ -12,7 +12,7 @@ export function getRelations(prog: ast.Program, env: TypeEnv): Relation[] {
     const res: Relation[] = [];
 
     for (const d of prog) {
-        if (d instanceof ast.Relation) {
+        if (d instanceof ast.RelationDecl) {
             res.push(
                 new Relation(
                     d.name,
