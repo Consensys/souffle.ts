@@ -99,6 +99,7 @@ export abstract class SouffleInstance implements SouffleInstanceI {
 
     release(): void {
         fse.removeSync(this.inputFile);
+
         for (const f of this.outputFiles) {
             fse.removeSync(f);
         }
@@ -112,7 +113,9 @@ export abstract class SouffleInstance implements SouffleInstanceI {
 
     relation(name: string): Relation {
         const res = this._relations.get(name);
+
         assert(res !== undefined, `Unknown relation ${name}`);
+
         return res;
     }
 
@@ -129,6 +132,7 @@ export class SouffleCSVInstance extends SouffleInstance {
 
     async allFacts(): Promise<OutputRelations> {
         assert(this.success, `Instance not run yet`);
+
         if (!this._results) {
             this._results = this.readProducedCsvFiles();
         }
@@ -141,13 +145,14 @@ export class SouffleCSVInstance extends SouffleInstance {
         const facts = res.get(name);
 
         assert(facts !== undefined, `Unknown relation ${name}`);
+
         return facts;
     }
 
     private parseCsv(content: string, delimiter = ","): string[][] {
         const config = {
             skipEmptyLines: true,
-            cast: true,
+            cast: false,
             delimiter
         };
 
@@ -255,6 +260,7 @@ export class SouffleCSVToSQLInstance extends SouffleCSVInstance implements Souff
             // Next populate it with data
             for (const rowGroup of chunk(rows, 200)) {
                 const valuesGroup: string[][] = [];
+
                 for (const row of rowGroup) {
                     valuesGroup.push(
                         row.fields.map((v, i) => fieldValToSQLVal(v, relation.fields[i][1]))
@@ -341,7 +347,7 @@ export class SouffleSQLiteInstance extends SouffleInstance implements SouffleSQL
         const res: OutputRelations = new Map();
 
         for (const reln of this._relations.values()) {
-            const rawRes = await this.db.all(`SELECT * from ${name}`);
+            const rawRes = await this.db.all(`SELECT * from ${reln.name}`);
 
             res.set(reln.name, Fact.fromSQLRows(reln, rawRes));
         }

@@ -1,0 +1,57 @@
+// https://souffle-lang.github.io/types#float-type
+
+.decl Name(n: symbol)
+Name("Hans").
+Name("Gretl").
+
+.decl Translate(n: symbol , o: number)
+// .output Translate
+Translate(x,ord(x)) :- Name(x).
+
+.decl Magic(x:number, y:unsigned)
+Magic(-1,1).
+// .output Magic
+
+// https://souffle-lang.github.io/types#equivalence-types
+
+.type myNumber = number
+
+// https://souffle-lang.github.io/types#subtypes
+
+.type myEvenNumber <: number
+.type myMultiplesOfFour <: myEvenNumber
+
+// https://souffle-lang.github.io/types#union-type
+
+.type City <: symbol
+.type Town <: symbol
+.type Village <: symbol
+.type Place = City | Town | Village
+
+// https://souffle-lang.github.io/types#record-types
+
+.type List = [
+    head : number,
+    tail : List
+]
+.decl B(x : List)
+B(nil).
+B([1,nil]).
+B([2,[3,nil]]).
+// .output B
+
+// https://souffle-lang.github.io/types#algebraic-data-types-adt
+
+.type Expression = Number { x : number }
+                | Variable { v : symbol}
+                | Add {e_1 : Expression, e_2 :Expression}
+                | Imaginary {}
+
+.decl A(x:Expression)
+
+A($Number(10)).
+A($Add($Number(10),$Imaginary())).
+A($Add($Number(10), $Variable("x"))).
+A($Number(x+1)) :- A($Number(x)), x < 20.
+
+// .output A

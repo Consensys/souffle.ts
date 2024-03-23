@@ -5,3 +5,4 @@ coverage
 .idea
 src/parser/souffle_parser_gen.js
 src/parser/souffle_value_parser_gen.js
+.vscode

@@ -2,6 +2,7 @@
 /* tslint:disable */
 
 const ast = require("../ast");
+const utils = require("../utils")
 
 function lexError(err) {
   throw new Error(err);
@@ -468,7 +469,7 @@ type_decl
       if ($4.length > 1) {
         $$ = new ast.UnionType($2, $4, @$);
       } else {
-        assert($4.length == 1);
+        utils.assert($4.length == 1);
         $$ = new ast.AliasType($2, $4[0], @$);
       }
     }
@@ -1416,7 +1417,7 @@ functor_decl
 functor_arg_type_list
   : %empty
   { 
-    return [];
+    $$ = [];
   }
   | non_empty_functor_arg_type_list
     {
@@ -1519,7 +1520,7 @@ directive_list
 relation_directive_list
   : qualified_name
     {
-      return [ $1 ];
+      $$ = [ $1 ];
     }
   | relation_directive_list COMMA qualified_name
     {

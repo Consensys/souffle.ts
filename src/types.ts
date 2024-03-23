@@ -58,6 +58,13 @@ export class ADTT extends DatalogType {
     ) {
         super(name);
     }
+
+    branch(name: string): Array<[string, DatalogType]> {
+        const res = this.branches.filter(([bName]) => bName === name);
+        assert(res.length === 1, ``);
+
+        return res[0][1];
+    }
 }
 
 export class TypeEnv {

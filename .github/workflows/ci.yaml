@@ -39,7 +39,7 @@ jobs:
                   npm install
                   npm link
                   npm run lint
-                  soufle-ts --version
+                  souffle-ts --version
 
             - name: Test and generate coverage report
               run: npm test

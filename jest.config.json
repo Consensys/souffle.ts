@@ -8,12 +8,7 @@
 
     "verbose": true,
 
-    "coveragePathIgnorePatterns": [
-        "/node_modules/",
-        "/test/",
-        "/coverage/",
-        "/src/parser/"
-    ],
+    "coveragePathIgnorePatterns": ["/node_modules/", "/test/", "/coverage/", "/src/parser/"],
     "coverageReporters": ["text", "text-summary", "lcov"],
     "coverageThreshold": {
         "global": {

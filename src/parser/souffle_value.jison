@@ -453,10 +453,7 @@ arg
     {
       $$ = new ast.RecordLiteral($2, @$);
     }
-  | DOLLAR qualified_name LPAREN arg_list RPAREN
-    {
-      $$ = new ast.ADTLiteral($2, $4, @$);
-    }
+  | branch_literal
   | LPAREN arg RPAREN
     {
       $$ = $2;
@@ -565,6 +562,19 @@ arg
   | aggregate_func arg_list COLON aggregate_body
     {
       parseNYI(`Aggregators ${yytext}`)
+    }
+  ;
+
+// We diverge from the Souffle grammar a bit here, as ADT literals in CSV files
+// may omit the parenthesis when there are 0 args.
+branch_literal
+  : DOLLAR qualified_name LPAREN arg_list RPAREN
+    {
+      $$ = new ast.ADTLiteral($2, $4, @$);
+    }
+  | DOLLAR qualified_name
+    {
+      $$ = new ast.ADTLiteral($2, [], @$);
     }
   ;
 
