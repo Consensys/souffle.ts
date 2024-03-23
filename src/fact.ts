@@ -164,10 +164,6 @@ export function ppFieldVal(val: FieldVal, typ: DatalogType): string {
 }
 
 function parseFieldValFromCsv(val: any, typ: DatalogType): FieldVal {
-    if (typ === NumberT || typ === UnsignedT) {
-        return BigInt(val);
-    }
-
     if (typ === NumberT || typ === UnsignedT || typ === FloatT) {
         return Number(val);
     }
