@@ -1,0 +1,36 @@
+/// inputData
+===============
+t
+aaaa
+abba
+bcab
+bdab
+/// outputData
+===============
+substrs str
+a    aaaa
+a    abba
+a    bcab
+a    bdab
+ab    abba
+ab    bcab
+ab    bdab
+cab    bcab
+/// outputData2
+===============
+t
+aaaa
+abba
+/// stringTable
+===============
+t
+aaaa
+abba
+bcab
+bdab
+/// substringTable
+===============
+t
+a
+ab
+cab

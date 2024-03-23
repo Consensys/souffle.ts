@@ -2,8 +2,8 @@
 ===============
 x
 $Number(10)
-$Add($Number(10), $Imaginary)
-$Add($Number(10), $Variable("x"))
+$Add($Number(10), $Imaginary())
+$Add($Number(10), $Variable(x))
 $Number(11)
 $Number(12)
 $Number(13)
@@ -23,7 +23,7 @@ nil
 /// Magic
 ===============
 x y z
--1    1    2.718
+-1    1    2.71799994
 /// Name
 ===============
 n

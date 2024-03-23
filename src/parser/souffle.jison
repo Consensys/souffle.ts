@@ -1417,7 +1417,7 @@ functor_decl
 functor_arg_type_list
   : %empty
   { 
-    return [];
+    $$ = [];
   }
   | non_empty_functor_arg_type_list
     {
@@ -1520,7 +1520,7 @@ directive_list
 relation_directive_list
   : qualified_name
     {
-      return [ $1 ];
+      $$ = [ $1 ];
     }
   | relation_directive_list COMMA qualified_name
     {

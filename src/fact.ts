@@ -115,7 +115,13 @@ function fieldValToJSON(val: FieldVal, typ: DatalogType): any {
     }
 
     if (typ instanceof ADTT) {
-        return val as string;
+        assert(isADT(val), `Expected an ADT val in fieldValToJSON, not ${val}`);
+        const branchT = typ.branch(val[0]);
+
+        return {
+            branch: val[0],
+            args: branchT.map(([name, fieldT]) => fieldValToJSON(val[1][name], fieldT))
+        };
     }
 
     throw new Error(`NYI type ${typ.name}`);
@@ -149,7 +155,9 @@ export function ppFieldVal(val: FieldVal, typ: DatalogType): string {
     }
 
     if (typ instanceof ADTT) {
-        return val as string;
+        assert(isADT(val), `Expected an ADT val in fieldValToJSON, not ${val}`);
+        const branchT = typ.branch(val[0]);
+        return `$${val[0]}(${branchT.map(([name, typ]) => ppFieldVal(val[1][name], typ)).join(", ")})`;
     }
 
     throw new Error(`NYI type ${typ.name}`);
@@ -181,7 +189,9 @@ function parseFieldValFromCsv(val: any, typ: DatalogType): FieldVal {
     }
 
     if (typ instanceof ADTT) {
-        return val;
+        assert(typeof val === "string", `Expected a string`);
+
+        return parseValueInt(val, typ);
     }
 
     throw new Error(`NYI datalog type "${typ.name}"`);
@@ -208,16 +218,12 @@ function parseFieldValFromSQL(val: any, typ: DatalogType): FieldVal {
         return parseFieldValFromCsv(val, typ.originalT);
     }
 
-    if (typ instanceof RecordT) {
+    if (typ instanceof RecordT || typ instanceof ADTT) {
         if (typeof val === "string") {
             return parseValueInt(val, typ);
         }
 
         throw new Error(`NYI parsing record types from ${val}`);
-    }
-
-    if (typ.name === "Expression") {
-        return val;
     }
 
     throw new Error(`NYI datalog type "${typ.name}"`);

@@ -347,7 +347,7 @@ export class SouffleSQLiteInstance extends SouffleInstance implements SouffleSQL
         const res: OutputRelations = new Map();
 
         for (const reln of this._relations.values()) {
-            const rawRes = await this.db.all(`SELECT * from ${name}`);
+            const rawRes = await this.db.all(`SELECT * from ${reln.name}`);
 
             res.set(reln.name, Fact.fromSQLRows(reln, rawRes));
         }

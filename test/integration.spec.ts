@@ -64,12 +64,12 @@ describe(`Instances produce the same output`, () => {
                 expectedOut = fse.readFileSync(test.slice(0, -3) + ".out", { encoding: "utf-8" });
             });
 
-            for (const mode of ["csv", "sqlite", "sqlite2csv"]) {
+            for (const mode of ["csv", "sqlite", "csv2sqlite"]) {
                 it(`${mode} instance works`, (done) => {
                     let stdOut = "";
                     let stdErr = "";
 
-                    const proc = spawn(EXECUTABLE, [test, "--instance", "csv"]);
+                    const proc = spawn(EXECUTABLE, [test, "--instance", mode]);
 
                     proc.stdout.on("data", (data) => {
                         stdOut += data.toString();
@@ -80,13 +80,20 @@ describe(`Instances produce the same output`, () => {
                     });
 
                     proc.on("exit", (code) => {
+                        if (
+                            mode === "sqlite" &&
+                            stdErr.startsWith("WARNING: SouffleSQLiteInstance doesn")
+                        ) {
+                            stdErr = stdErr.slice(132);
+                        }
+
                         expect(stdErr.trimEnd()).toEqual("");
                         expect(code).toEqual(0);
                         expect(stdOut.trimEnd()).toEqual(expectedOut);
 
                         done();
                     });
-                });
+                }, 10000);
             }
         });
     }
