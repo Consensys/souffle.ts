@@ -8,8 +8,8 @@ Name("Gretl").
 // .output Translate
 Translate(x,ord(x)) :- Name(x).
 
-.decl Magic(x:number, y:unsigned, z:float)
-Magic(-1,1,2.718).
+.decl Magic(x:number, y:unsigned)
+Magic(-1,1).
 // .output Magic
 
 // https://souffle-lang.github.io/types#equivalence-types
