@@ -152,7 +152,7 @@ export class SouffleCSVInstance extends SouffleInstance {
     private parseCsv(content: string, delimiter = ","): string[][] {
         const config = {
             skipEmptyLines: true,
-            cast: true,
+            cast: false,
             delimiter
         };
 
