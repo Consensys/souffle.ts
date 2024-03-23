@@ -96,6 +96,8 @@ async function main() {
             console.log(fact.toCSVRow().join("    "));
         }
     }
+
+    instance.release();
 }
 
 main()
