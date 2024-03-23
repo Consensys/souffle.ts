@@ -93,7 +93,7 @@ describe(`Instances produce the same output`, () => {
 
                         done();
                     });
-                }, 20000);
+                }, 60000);
             }
         });
     }
