@@ -15,9 +15,6 @@ import { parseProgram } from "./parser";
 export type SouffleOutputType = "csv" | "sqlite";
 export type OutputRelations = Map<string, Fact[]>;
 
-const MY_DIR = __dirname;
-const DEFAULT_SO_DIR = join(MY_DIR, "../../functors");
-
 export interface SouffleInstanceI {
     run(outputRelations: string[]): Promise<void>;
     release(): void;
@@ -40,7 +37,7 @@ export abstract class SouffleInstance implements SouffleInstanceI {
 
     protected env: TypeEnv;
     protected _relations: Map<string, Relation>;
-    protected soDir: string;
+    protected soDir: string | undefined;
     protected program: ast.Program;
 
     constructor(
@@ -54,7 +51,7 @@ export abstract class SouffleInstance implements SouffleInstanceI {
         this.env = TypeEnv.buildTypeEnv(this.program);
         this._relations = new Map(getRelations(this.program, this.env).map((r) => [r.name, r]));
 
-        this.soDir = soDir ? soDir : DEFAULT_SO_DIR;
+        this.soDir = soDir;
     }
 
     async run(outputRelations: string[]): Promise<void> {
@@ -80,13 +77,17 @@ export abstract class SouffleInstance implements SouffleInstanceI {
             encoding: "utf-8"
         });
 
-        const result = spawnSync(
-            "souffle",
-            ["--wno", "all", `-L${this.soDir}`, "-D", this.tmpDir, this.inputFile],
-            {
-                encoding: "utf-8"
-            }
-        );
+        const args = ["--wno", "all", "-D", this.tmpDir];
+
+        if (this.soDir !== undefined) {
+            args.push(`-L${this.soDir}`);
+        }
+
+        args.push(this.inputFile);
+
+        const result = spawnSync("souffle", args, {
+            encoding: "utf-8"
+        });
 
         if (result.status !== 0) {
             throw new Error(
