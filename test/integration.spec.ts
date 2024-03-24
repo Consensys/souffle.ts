@@ -16,7 +16,7 @@ for (const sample of samples) {
         let stdOut = "";
         let stdErr = "";
 
-        beforeAll((done) => {
+        before((done) => {
             const proc = spawn(EXECUTABLE, [sample]);
 
             expectedOut = fse.readFileSync(sample.slice(0, -2) + "out", { encoding: "utf-8" });
@@ -60,7 +60,7 @@ describe(`Instances produce the same output`, () => {
         describe(test, () => {
             let expectedOut: string;
 
-            beforeAll(() => {
+            before(() => {
                 expectedOut = fse.readFileSync(test.slice(0, -3) + ".out", { encoding: "utf-8" });
             });
 
@@ -93,7 +93,7 @@ describe(`Instances produce the same output`, () => {
 
                         done();
                     });
-                }, 20000);
+                });
             }
         });
     }

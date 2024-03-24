@@ -10,13 +10,13 @@ function ppProg(p: Program): string {
 
 describe(`Parse Round-trip tests`, () => {
     for (const dl of searchRecursive("test/samples/", (name) => name.endsWith(".dl"))) {
-        describe(`Sample ${dl}`, () => {
+        describe(dl, () => {
             let contents: string;
             let prog: Program;
             let output: string;
             let reParsedProg: Program;
 
-            beforeAll(() => {
+            before(() => {
                 contents = fse.readFileSync(dl, { encoding: "utf-8" });
             });
 

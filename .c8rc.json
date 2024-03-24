@@ -1,0 +1,10 @@
+{
+    "extension": [".ts"],
+    "exclude": ["node_modules/", "test/", "coverage/", "src/bin/"],
+    "reporter": ["lcov", "text-summary"],
+    "check-coverage": true,
+    "statements": 80,
+    "branches": 80,
+    "functions": 80,
+    "lines": 80
+}
