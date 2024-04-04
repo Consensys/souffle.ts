@@ -67,6 +67,30 @@ export class ADTT extends DatalogType {
     }
 }
 
+/**
+ * Returns true iff t is a primitive types. Primitive types are:
+ *  - number
+ *  - unsigned
+ *  - float
+ *  - symbol
+ *  - alias/sub-types of primitive types
+ */
+export function isPrimitiveType(t: DatalogType): boolean {
+    if (t instanceof PrimitiveT) {
+        return true;
+    }
+
+    if (t instanceof AliasT) {
+        return isPrimitiveType(t.originalT);
+    }
+
+    if (t instanceof SubT) {
+        return isPrimitiveType(t.parentT);
+    }
+
+    return false;
+}
+
 export class TypeEnv {
     private env: Map<string, DatalogType> = new Map();
 
