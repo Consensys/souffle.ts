@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import fse from "fs-extra";
-import {
-    SouffleCSVInstance,
-    SouffleCSVToSQLInstance,
-    SouffleInstance,
-    SouffleSQLiteInstance
-} from "../instance";
+import { SouffleCSVInstance, SouffleInstance, SouffleSQLiteInstance } from "../instance";
 import { parseProgram } from "../parser";
 
 const pkg = require("../../package.json");
@@ -25,7 +20,7 @@ async function main() {
     program
         .option("--stdin", "Read input from STDIN instead of files")
         .option("--parse", "Print AST of parsed Datalog source and exit")
-        .option("--instance <type>", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
+        .option("--instance <type>", "Type of instance - one of csv, sqlite", "csv");
 
     program.parse(process.argv);
 
@@ -71,8 +66,6 @@ async function main() {
         instance = new SouffleCSVInstance(dl);
     } else if (options.instance === "sqlite") {
         instance = new SouffleSQLiteInstance(dl);
-    } else if (options.instance === "csv2sqlite") {
-        instance = new SouffleCSVToSQLInstance(dl);
     } else {
         throw new Error(`Unknown instance type ${options.instance}`);
     }

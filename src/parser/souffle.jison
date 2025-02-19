@@ -1278,7 +1278,7 @@ component_decl
 component_head
   : COMPONENT component_type COLON component_type_list
     {
-      $$ = [$2, $3];
+      $$ = [$2, $4];
     }
   | COMPONENT component_type
     {

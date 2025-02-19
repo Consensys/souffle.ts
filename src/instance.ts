@@ -2,13 +2,13 @@ import { spawnSync } from "child_process";
 import fse from "fs-extra";
 import os from "os";
 import { basename, join } from "path";
-import { assert, chunk, searchRecursive } from "./utils";
+import { assert, searchRecursive } from "./utils";
 import { parse } from "csv-parse/sync";
 import sqlite3 from "sqlite3";
 import { open, Database } from "sqlite";
-import { NumberT, RecordT, SubT, SymbolT, DatalogType, TypeEnv, AliasT, ADTT } from "./types";
+import { RecordT, TypeEnv, ADTT } from "./types";
 import { Relation, getRelations } from "./relation";
-import { Fact, FieldVal, ppFieldVal } from "./fact";
+import { Fact } from "./fact";
 import * as ast from "./ast";
 import { parseProgram } from "./parser";
 
@@ -175,126 +175,6 @@ export class SouffleCSVInstance extends SouffleInstance {
         }
 
         return relMap;
-    }
-}
-
-function datalogToSQLType(typ: DatalogType): string {
-    if (typ === NumberT) {
-        return "INTEGER";
-    }
-
-    if (typ === SymbolT) {
-        return "TEXT";
-    }
-
-    if (typ instanceof SubT) {
-        return datalogToSQLType(typ.parentT);
-    }
-
-    if (typ instanceof AliasT) {
-        return datalogToSQLType(typ.originalT);
-    }
-
-    if (typ instanceof RecordT) {
-        return "TEXT";
-    }
-
-    throw new Error(`NYI datalogToSQLType(${typ})`);
-}
-
-function fieldValToSQLVal(val: FieldVal, typ: DatalogType): string {
-    if (typ === NumberT) {
-        return ppFieldVal(val, typ);
-    }
-
-    if (typ instanceof SubT) {
-        return fieldValToSQLVal(val, typ.parentT);
-    }
-
-    if (typ instanceof AliasT) {
-        return fieldValToSQLVal(val, typ.originalT);
-    }
-
-    if (typ === SymbolT || typ instanceof RecordT) {
-        return `"${ppFieldVal(val, typ)}"`;
-    }
-
-    throw new Error(`NYI datalogToSQLType(${typ})`);
-}
-
-export class SouffleCSVToSQLInstance extends SouffleCSVInstance implements SouffleSQLInstanceI {
-    private _db: Database<sqlite3.Database, sqlite3.Statement> | undefined;
-    private _dbName: string | undefined;
-
-    protected async getDB(): Promise<Database<sqlite3.Database, sqlite3.Statement>> {
-        if (this._db !== undefined) {
-            return this._db;
-        }
-
-        this._dbName = join(this.tmpDir, "output.sqlite");
-        this.outputFiles.push(this._dbName);
-
-        this._db = await open({
-            filename: this._dbName,
-            driver: sqlite3.Database
-        });
-
-        this.populateDatabase(this._db);
-
-        return this._db;
-    }
-
-    private populateDatabase(db: Database<sqlite3.Database, sqlite3.Statement>) {
-        assert(this.success, `Analysis is not finished`);
-        const output = this.readProducedCsvFiles();
-
-        for (const [relnName, rows] of output) {
-            const relation = this.relation(relnName);
-
-            // First create the table
-            const columns: string[] = relation.fields.map(
-                ([name, typ]) => `${name} ${datalogToSQLType(typ)}`
-            );
-
-            db.exec(`CREATE TABLE ${relnName} (${columns.join(", ")})`);
-
-            // Next populate it with data
-            for (const rowGroup of chunk(rows, 200)) {
-                const valuesGroup: string[][] = [];
-
-                for (const row of rowGroup) {
-                    valuesGroup.push(
-                        row.fields.map((v, i) => fieldValToSQLVal(v, relation.fields[i][1]))
-                    );
-                }
-
-                const query = `INSERT INTO ${relnName} VALUES ${valuesGroup
-                    .map((values) => `(${values.join(", ")})`)
-                    .join(", ")}`;
-
-                db.exec(query);
-            }
-        }
-    }
-
-    async relationFacts(name: string): Promise<Fact[]> {
-        const r = this._relations.get(name);
-        assert(r !== undefined, `Uknown relation ${name}`);
-
-        const db = await this.getDB();
-        const rawRes = await db.all(`SELECT * from ${name}`);
-
-        return Fact.fromSQLRows(r, rawRes);
-    }
-
-    async getSQL(sql: string): Promise<any[]> {
-        const db = await this.getDB();
-        return await db.all(sql);
-    }
-
-    dbName(): string {
-        assert(this._dbName !== undefined, `Analysis hasn't run yet`);
-        return this._dbName;
     }
 }
 
