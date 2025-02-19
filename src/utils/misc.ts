@@ -10,26 +10,6 @@ export function flatten<T>(arg: T[][]): T[] {
     return res;
 }
 
-export function chunk<T>(arr: T[], chunkSize: number): T[][] {
-    const res: T[][] = [];
-    let chunk: T[] = [];
-
-    for (const x of arr) {
-        if (chunk.length === chunkSize) {
-            res.push(chunk);
-            chunk = [];
-        }
-
-        chunk.push(x);
-    }
-
-    if (chunk.length > 0) {
-        res.push(chunk);
-    }
-
-    return res;
-}
-
 export function searchRecursive(targetPath: string, filter: (entry: string) => boolean): string[] {
     const stat = fse.statSync(targetPath);
     const results: string[] = [];

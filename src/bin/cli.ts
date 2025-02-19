@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import fse from "fs-extra";
-import { SouffleCSVInstance, SouffleInstance, SouffleSQLiteInstance } from "../instance";
 import { parseProgram } from "../parser";
+import { TypeEnv } from "../types";
+import { getRelations } from "../relation";
+import { run } from "../run";
 
 const pkg = require("../../package.json");
 
@@ -48,10 +50,9 @@ async function main() {
     }
 
     const dl = [...fileMap.values()].join("\n");
+    const ast = parseProgram(dl);
 
     if (options.parse) {
-        const ast = parseProgram(dl);
-
         /**
          * @todo Introduce JSON AST
          */
@@ -60,26 +61,17 @@ async function main() {
         return;
     }
 
-    let instance: SouffleInstance;
+    const env = TypeEnv.buildTypeEnv(ast);
+    const relations = getRelations(ast, env);
+    const result = await run(dl, relations, options.instance);
 
-    if (options.instance === "csv") {
-        instance = new SouffleCSVInstance(dl);
-    } else if (options.instance === "sqlite") {
-        instance = new SouffleSQLiteInstance(dl);
-    } else {
-        throw new Error(`Unknown instance type ${options.instance}`);
-    }
+    const facts = await result.allFacts();
 
-    const relations = [...instance.relations()];
-
-    await instance.run(relations.map((reln) => reln.name));
-
-    const res = await instance.allFacts();
-    const orderedRelns = [...res.entries()];
+    const orderedRelns = [...facts.entries()];
     orderedRelns.sort(([reln1], [reln2]) => (reln1 < reln2 ? -1 : reln1 === reln2 ? 0 : 1));
 
     for (const [relnName, facts] of orderedRelns) {
-        const rel = instance.relation(relnName);
+        const rel = result.relation(relnName);
 
         console.log(`/// ${relnName}`);
         console.log("===============");
@@ -90,7 +82,7 @@ async function main() {
         }
     }
 
-    instance.release();
+    result.release();
 }
 
 main()
