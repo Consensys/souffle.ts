@@ -39,4 +39,8 @@ export class BinaryOperator extends Expression {
     getStructId(): any {
         return [this.left, this.op, this.right];
     }
+
+    copy(): this {
+        return new BinaryOperator(this.left.copy(), this.op, this.right.copy(), this.src) as this;
+    }
 }

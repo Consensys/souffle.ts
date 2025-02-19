@@ -21,4 +21,12 @@ export class Atom extends Node {
     getStructId(): any {
         return [this.name, this.args];
     }
+
+    copy(): this {
+        return new Atom(
+            this.name,
+            this.args.map((arg) => arg.copy()),
+            this.src
+        ) as this;
+    }
 }

@@ -20,4 +20,11 @@ export class Conjunction extends Logical {
     getStructId(): any {
         return this.conjuncts;
     }
+
+    copy(): this {
+        return new Conjunction(
+            this.conjuncts.map((c) => c.copy()),
+            this.src
+        ) as this;
+    }
 }

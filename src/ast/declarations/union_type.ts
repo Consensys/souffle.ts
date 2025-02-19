@@ -22,4 +22,12 @@ export class UnionType extends Declaration {
     getStructId(): any {
         return [this.name, this.types];
     }
+
+    copy(): this {
+        return new UnionType(
+            this.name,
+            this.types.map((t) => t.copy()),
+            this.src
+        ) as this;
+    }
 }

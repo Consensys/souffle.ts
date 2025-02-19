@@ -22,4 +22,8 @@ export class AliasType extends Declaration {
     getStructId(): any {
         return [this.name, this.originalType];
     }
+
+    copy(): this {
+        return new AliasType(this.name, this.originalType.copy(), this.src) as this;
+    }
 }

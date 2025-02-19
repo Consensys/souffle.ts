@@ -5,7 +5,9 @@ import { searchRecursive } from "../src/utils";
 
 const EXECUTABLE = "souffle-ts";
 
-const samples = searchRecursive("test/samples/", (name) => name.endsWith(".dl"));
+const samples = searchRecursive("test/samples/", (name) => name.endsWith(".out")).map(
+    (x) => x.slice(0, -3) + "dl"
+);
 
 for (const sample of samples) {
     describe(sample, () => {

@@ -21,4 +21,8 @@ export class Pragma extends Declaration {
     getStructId(): any {
         return [this.name, this.value];
     }
+
+    copy(): this {
+        return new Pragma(this.name, this.value, this.src) as this;
+    }
 }

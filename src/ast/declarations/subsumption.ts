@@ -35,4 +35,14 @@ export class Subsumption extends Declaration {
     getStructId(): any {
         return [this.dominatedHead, this.dominatingHead, this.body, this.queryPlan];
     }
+
+    copy(): this {
+        return new Subsumption(
+            this.dominatedHead.copy(),
+            this.dominatingHead.copy(),
+            this.body.copy(),
+            this.queryPlan.map(([num, nums]) => [num, [...nums]]),
+            this.src
+        ) as this;
+    }
 }

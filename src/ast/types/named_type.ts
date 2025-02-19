@@ -20,4 +20,8 @@ export class NamedType extends Type {
     getStructId(): any {
         return [this.name];
     }
+
+    copy(): this {
+        return new NamedType(this.name, this.src) as this;
+    }
 }

@@ -22,4 +22,8 @@ export class TypeCast extends Expression {
     getStructId(): any {
         return [this.subexpr, this.type];
     }
+
+    copy(): this {
+        return new TypeCast(this.subexpr.copy(), this.type.copy(), this.src) as this;
+    }
 }

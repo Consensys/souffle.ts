@@ -1,0 +1,68 @@
+.pragma "supbrah"
+.type T = A { x: number }
+        | B { x: symbol }
+
+.decl AdtR(x: number, t: T)
+AdtR(1, $A(1)).
+
+.type myNumber = number
+
+.decl A(x:number)
+A(autoinc()):-true.
+
+.decl PlusOne(x: number)
+PlusOne(x) :- A(y), y = x + 1.
+
+.decl Fl(f: flaot)
+F(0.5).
+
+.comp Graph<NodeT> {
+    .decl edge(x:NodeT, y:NodeT)
+
+    .decl path(x:NodeT, y:NodeT)
+
+    .override path
+
+    path(x, y) :- edge(x, y).
+    path(x, y) :- path(x, z), edge(z, y).
+}
+
+.init NumG = Graph<number>
+
+.functor id(x: number):number stateful
+.decl FunctorRel(x: number)
+FunctorRel(x) :- @id(x) = 1.
+
+.type Path = [head: number, tail: Path]
+
+.decl EmptyPath(p: Path)
+EmptyPath(nil).
+
+.decl PathLenOne(p: Path)
+PathLenOne([_, nil]).
+
+.type id <: number
+.type name <: string
+.type IdOrName = id | name
+
+.decl Smallest(x: number)
+Smallest(x) <= Smallest(y) :- (x < y ; x = y).
+
+NumG.edge(1,2).
+NumG.edge(2,3).
+NumG.edge(3,4).
+
+.input NumG.edge()
+.output NumG.path()
+
+.decl StrRln(s: string)
+StrRln("foo").
+
+.decl IdIsOne(x: id)
+IdIsOne(x) :- as(number, x) = -1.
+
+.decl IsUnsZero(x: unsigned)
+IsUnsZero(0u).
+
+.decl NotContainsRel(x: string, y: string)
+NotContainsRel(x, y) :- !contains(x, y).

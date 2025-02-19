@@ -23,4 +23,8 @@ export class StringConstraint extends Constraint {
     getStructId(): any {
         return [this.name, this.lhs, this.rhs];
     }
+
+    copy(): this {
+        return new StringConstraint(this.name, this.lhs.copy(), this.rhs.copy(), this.src) as this;
+    }
 }

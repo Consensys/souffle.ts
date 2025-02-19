@@ -16,4 +16,5 @@ export abstract class Node implements PPAble, StructEqualityComparable {
     abstract pp(indent?: string): string;
     abstract getStructId(): any;
     abstract children(): Iterable<Node>;
+    abstract copy(): this;
 }

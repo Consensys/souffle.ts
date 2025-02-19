@@ -20,4 +20,8 @@ export class Unsigned extends Expression {
     getStructId(): any {
         return [this.value];
     }
+
+    copy(): this {
+        return new Unsigned(this.value, this.src) as this;
+    }
 }

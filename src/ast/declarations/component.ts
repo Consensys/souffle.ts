@@ -34,4 +34,14 @@ export class Component extends Declaration {
     getStructId(): any {
         return [this.name, this.typeParams, this.bases, this.body];
     }
+
+    copy(): this {
+        return new Component(
+            this.name,
+            [...this.typeParams],
+            this.bases.map(([name, params]) => [name, [...params]]),
+            this.body.map((decl) => decl.copy()),
+            this.src
+        ) as this;
+    }
 }

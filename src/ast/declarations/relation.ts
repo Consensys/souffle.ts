@@ -54,4 +54,14 @@ export class RelationDecl extends Declaration {
         tags.sort();
         return [this.name, this.args, tags, this.choiceDomains];
     }
+
+    copy(): this {
+        return new RelationDecl(
+            this.name,
+            this.args.map(([name, type]) => [name, type.copy()]),
+            new Set([...this.tags]),
+            this.choiceDomains.map((r) => (r instanceof Array ? [...r] : r)),
+            this.src
+        ) as this;
+    }
 }

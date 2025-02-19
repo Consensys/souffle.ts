@@ -20,4 +20,8 @@ export class Num extends Expression {
     getStructId(): any {
         return [this.value];
     }
+
+    copy(): this {
+        return new Num(this.value, this.src) as this;
+    }
 }

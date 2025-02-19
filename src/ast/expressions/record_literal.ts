@@ -20,4 +20,11 @@ export class RecordLiteral extends Expression {
     getStructId(): any {
         return this.args;
     }
+
+    copy(): this {
+        return new RecordLiteral(
+            this.args.map((e) => e.copy()),
+            this.src
+        ) as this;
+    }
 }

@@ -17,4 +17,8 @@ export class Nil extends Expression {
     getStructId(): any {
         return [];
     }
+
+    copy(): this {
+        return new Nil(this.src) as this;
+    }
 }

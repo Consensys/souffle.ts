@@ -26,4 +26,14 @@ export class Functor extends Declaration {
     getStructId(): any {
         return [this.name, this.args, this.returnType, this.stateful];
     }
+
+    copy(): this {
+        return new Functor(
+            this.name,
+            this.args.map(([name, typ]) => [name, typ.copy()]),
+            this.returnType.copy(),
+            this.stateful,
+            this.src
+        ) as this;
+    }
 }
