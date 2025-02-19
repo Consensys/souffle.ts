@@ -1,10 +1,8 @@
-import { PPAble, StructEqualityComparable } from "../utils";
-
 let nodeCtr = 0;
 
 export type Src = any;
 
-export abstract class Node implements PPAble, StructEqualityComparable {
+export abstract class Node {
     readonly id: number;
     readonly src: Src;
 
@@ -16,4 +14,5 @@ export abstract class Node implements PPAble, StructEqualityComparable {
     abstract pp(indent?: string): string;
     abstract getStructId(): any;
     abstract children(): Iterable<Node>;
+    abstract copy(): this;
 }

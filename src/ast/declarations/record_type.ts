@@ -24,4 +24,12 @@ export class RecordType extends Declaration {
     getStructId(): any {
         return [this.name, this.fields];
     }
+
+    copy(): this {
+        return new RecordType(
+            this.name,
+            this.fields.map(([name, typ]) => [name, typ.copy()]),
+            this.src
+        ) as this;
+    }
 }

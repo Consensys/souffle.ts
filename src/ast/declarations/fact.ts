@@ -21,4 +21,8 @@ export class FactDecl extends Declaration {
     getStructId(): any {
         return this.atom.getStructId();
     }
+
+    copy(): this {
+        return new FactDecl(this.atom.copy(), this.src) as this;
+    }
 }

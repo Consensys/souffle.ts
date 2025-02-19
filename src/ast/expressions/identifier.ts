@@ -20,4 +20,8 @@ export class Identifier extends Expression {
     getStructId(): any {
         return [this.name];
     }
+
+    copy(): this {
+        return new Identifier(this.name, this.src) as this;
+    }
 }

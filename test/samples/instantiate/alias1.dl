@@ -1,0 +1,10 @@
+.comp A<T> : T {
+  .decl T(x: number)
+  T(1).
+}
+
+.comp Base { }
+
+.init a = A<Base>
+
+.output a.T()

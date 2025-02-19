@@ -20,4 +20,8 @@ export class Float extends Expression {
     getStructId(): any {
         return [this.value];
     }
+
+    copy(): this {
+        return new Float(this.value, this.src) as this;
+    }
 }

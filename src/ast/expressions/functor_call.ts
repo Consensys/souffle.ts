@@ -22,4 +22,13 @@ export class FunctorCall extends Expression {
     getStructId(): any {
         return [this.name, ...this.args, this.builtin];
     }
+
+    copy(): this {
+        return new FunctorCall(
+            this.name,
+            this.args.map((arg) => arg.copy()),
+            this.builtin,
+            this.src
+        ) as this;
+    }
 }

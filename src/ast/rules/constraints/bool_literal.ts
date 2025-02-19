@@ -20,4 +20,8 @@ export class BoolLiteral extends Constraint {
     getStructId(): any {
         return [this.value];
     }
+
+    copy(): this {
+        return new BoolLiteral(this.value, this.src) as this;
+    }
 }

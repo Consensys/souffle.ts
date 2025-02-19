@@ -25,4 +25,8 @@ export class Comparison extends Constraint {
     getStructId(): any {
         return [this.lhs, this.op, this.rhs];
     }
+
+    copy(): this {
+        return new Comparison(this.lhs.copy(), this.op, this.rhs.copy(), this.src) as this;
+    }
 }

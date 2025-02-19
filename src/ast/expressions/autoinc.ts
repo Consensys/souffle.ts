@@ -17,4 +17,8 @@ export class AutoIncrement extends Expression {
     getStructId(): any {
         return [];
     }
+
+    copy(): this {
+        return new AutoIncrement(this.src) as this;
+    }
 }

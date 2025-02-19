@@ -34,4 +34,13 @@ export class Rule extends Declaration {
     getStructId(): any {
         return [this.head, this.body, this.queryPlan];
     }
+
+    copy(): this {
+        return new Rule(
+            this.head.copy(),
+            this.body.copy(),
+            this.queryPlan.map(([num, nums]) => [num, [...nums]]),
+            this.src
+        ) as this;
+    }
 }

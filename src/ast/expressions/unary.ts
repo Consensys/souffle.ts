@@ -23,4 +23,8 @@ export class UnaryOperator extends Expression {
     getStructId(): any {
         return [this.op, this.subExpr];
     }
+
+    copy(): this {
+        return new UnaryOperator(this.op, this.subExpr.copy(), this.src) as this;
+    }
 }

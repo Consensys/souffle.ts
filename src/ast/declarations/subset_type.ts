@@ -22,4 +22,8 @@ export class SubsetType extends Declaration {
     getStructId(): any {
         return [this.name, this.originalType];
     }
+
+    copy(): this {
+        return new SubsetType(this.name, this.originalType.copy(), this.src) as this;
+    }
 }

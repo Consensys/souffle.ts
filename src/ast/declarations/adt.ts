@@ -25,4 +25,15 @@ export class AlgebraicDataType extends Declaration {
     getStructId(): any {
         return [this.name, this.branches];
     }
+
+    copy(): this {
+        return new AlgebraicDataType(
+            this.name,
+            this.branches.map(([name, fields]) => [
+                name,
+                fields.map(([name, type]) => [name, type.copy()])
+            ]),
+            this.src
+        ) as this;
+    }
 }

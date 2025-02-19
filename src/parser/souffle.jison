@@ -138,12 +138,12 @@ function parseNYI(token) {
 ">"                                    return "GT_TOK"
 [0-9]+"."[0-9]+"."[0-9]+"."[0-9]+      lexNYI(yytext); 
 [0-9]+[.][0-9]+                        return "FLOAT_TOK"
-[0-9]+                                 return "NUMBER_TOK"
-0b[0-1]+                               return "NUMBER_TOK"
-0x[a-fA-F0-9]+                         return "NUMBER_TOK"
 [0-9]+u                                return "UNSIGNED_TOK"
 0b[0-1]+u                              return "UNSIGNED_TOK"
 0x[a-fA-F0-9]+u                        return "UNSIGNED_TOK"
+[0-9]+                                 return "NUMBER_TOK"
+0b[0-1]+                               return "NUMBER_TOK"
+0x[a-fA-F0-9]+                         return "NUMBER_TOK"
 [_\?a-zA-Z][_\?a-zA-Z0-9]*             return "IDENT_TOK";
 \"(\\.|[^"\\])*\"                      return "STRING_TOK";
 \#.*$                                  lexNYI(yytext); 
@@ -1276,20 +1276,26 @@ component_decl
  * Component Head
  */
 component_head
-  : COMPONENT component_type
+  : COMPONENT component_type COLON component_type_list
+    {
+      $$ = [$2, $4];
+    }
+  | COMPONENT component_type
     {
       $$ = [$2, []];
     }
-  | component_head COLON component_type
-    {
-      $$ = $1;
-      $$[1].push($3);
-    }
-  | component_head COMMA component_type
-    {
-      $$ = $1;
-      $$[1].push($3);
-    }
+  ;
+
+component_type_list
+  : component_type
+  {
+    $$ = [$1];
+  }
+  | component_type_list COMMA component_type
+  {
+    $$ = $1;
+    $1.push($3);
+  }
   ;
 
 /**
@@ -1319,7 +1325,7 @@ component_type_params
 component_param_list
   : IDENT
     {
-      $$ = $1;
+      $$ = [$1];
     }
   | component_param_list COMMA IDENT
     {
@@ -1344,7 +1350,7 @@ component_body
   | component_body rule
     {
       $$ = $1;
-      $$.push($2);
+      $$.push(...$2);
     }
   | component_body fact
     {

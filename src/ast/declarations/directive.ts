@@ -27,4 +27,13 @@ export class Directive extends Declaration {
     getStructId(): any {
         return [this.type, this.name, this.parameters];
     }
+
+    copy(): this {
+        return new Directive(
+            this.type,
+            this.name,
+            this.parameters.map(([name, val]) => [name, val]),
+            this.src
+        ) as this;
+    }
 }

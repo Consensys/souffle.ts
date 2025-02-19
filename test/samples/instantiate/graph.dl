@@ -1,0 +1,31 @@
+.comp Base<NodeT> {
+    .decl Node(n: NodeT) overridable
+
+    .decl Foo(n: NodeT)
+    Node(n) :- Foo(n).
+}
+
+.comp Graph<NodeT> : Base<NodeT> {
+    .decl path(x:NodeT, y:NodeT)
+    .decl edge(x: NodeT, y: NodeT)
+
+    .override Node
+
+    Node(n) :- edge(n, _).
+    Node(n) :- edge(_, n).
+
+    path(x, y) :- edge(x, y).
+    path(x, y) :- path(x, z), edge(z, y).
+}
+
+.comp Main {
+    .init g = Graph<number>
+
+    g.edge(1, 2).
+    g.edge(2, 3).
+    g.edge(3, 4).
+
+    .output g.path, g.Node()
+}
+
+.init main = Main

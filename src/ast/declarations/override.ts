@@ -20,4 +20,8 @@ export class Override extends Declaration {
     getStructId(): any {
         return [this.relation];
     }
+
+    copy(): this {
+        return new Override(this.relation, this.src) as this;
+    }
 }

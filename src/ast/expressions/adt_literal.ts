@@ -21,4 +21,12 @@ export class ADTLiteral extends Expression {
     getStructId(): any {
         return [this.branch, this.args];
     }
+
+    copy(): this {
+        return new ADTLiteral(
+            this.branch,
+            this.args.map((e) => e.copy()),
+            this.src
+        ) as this;
+    }
 }

@@ -20,4 +20,8 @@ export class Negation extends Logical {
     getStructId(): any {
         return [this.inner];
     }
+
+    copy(): this {
+        return new Negation(this.inner.copy(), this.src) as this;
+    }
 }

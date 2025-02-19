@@ -17,4 +17,8 @@ export class UnnamedVar extends Expression {
     getStructId(): any {
         return [];
     }
+
+    copy(): this {
+        return new UnnamedVar(this.src) as this;
+    }
 }

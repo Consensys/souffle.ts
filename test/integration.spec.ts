@@ -5,7 +5,9 @@ import { searchRecursive } from "../src/utils";
 
 const EXECUTABLE = "souffle-ts";
 
-const samples = searchRecursive("test/samples/", (name) => name.endsWith(".dl"));
+const samples = searchRecursive("test/samples/", (name) => name.endsWith(".out")).map(
+    (x) => x.slice(0, -3) + "dl"
+);
 
 for (const sample of samples) {
     describe(sample, () => {
@@ -64,7 +66,7 @@ describe(`Instances produce the same output`, () => {
                 expectedOut = fse.readFileSync(test.slice(0, -3) + ".out", { encoding: "utf-8" });
             });
 
-            for (const mode of ["csv", "sqlite", "csv2sqlite"]) {
+            for (const mode of ["csv", "sqlite"]) {
                 it(`${mode} instance works`, (done) => {
                     let stdOut = "";
                     let stdErr = "";

@@ -22,4 +22,8 @@ export class ComponentInit extends Declaration {
     getStructId(): any {
         return [this.name, this.inv[0], ...this.inv[1]];
     }
+
+    copy(): this {
+        return new ComponentInit(this.name, [this.inv[0], [...this.inv[1]]], this.src) as this;
+    }
 }

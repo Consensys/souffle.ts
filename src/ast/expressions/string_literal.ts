@@ -20,4 +20,8 @@ export class StringLiteral extends Expression {
     getStructId(): any {
         return [this.value];
     }
+
+    copy(): this {
+        return new StringLiteral(this.value, this.src) as this;
+    }
 }
