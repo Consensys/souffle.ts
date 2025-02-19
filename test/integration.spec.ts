@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import expect from "expect";
 import fse from "fs-extra";
-import { searchRecursive } from "../src/utils";
+import { assert, searchRecursive } from "../src/utils";
 
 const EXECUTABLE = "souffle-ts";
 
@@ -12,14 +12,23 @@ for (const sample of samples) {
         let exitCode: number | null;
 
         let expectedOut: string;
+        let outputRelations: string[];
 
         let stdOut = "";
         let stdErr = "";
 
         before((done) => {
-            const proc = spawn(EXECUTABLE, [sample]);
-
             expectedOut = fse.readFileSync(sample.slice(0, -2) + "out", { encoding: "utf-8" });
+            const datalog = fse.readFileSync(sample, { encoding: "utf-8" });
+            const firstLine = datalog.slice(0, datalog.indexOf("\n"));
+            assert(
+                firstLine.startsWith("//"),
+                `Expected first line of start to be list of output relations`
+            );
+
+            outputRelations = firstLine.slice(2).trim().split(",");
+
+            const proc = spawn(EXECUTABLE, [sample, "--output-relations", ...outputRelations]);
 
             proc.stdout.on("data", (data) => {
                 stdOut += data.toString();
@@ -52,49 +61,3 @@ for (const sample of samples) {
         });
     });
 }
-
-const TRIPPLE_TESTS = ["test/samples/large.dl"];
-
-describe(`Instances produce the same output`, () => {
-    for (const test of TRIPPLE_TESTS) {
-        describe(test, () => {
-            let expectedOut: string;
-
-            before(() => {
-                expectedOut = fse.readFileSync(test.slice(0, -3) + ".out", { encoding: "utf-8" });
-            });
-
-            for (const mode of ["csv", "sqlite", "csv2sqlite"]) {
-                it(`${mode} instance works`, (done) => {
-                    let stdOut = "";
-                    let stdErr = "";
-
-                    const proc = spawn(EXECUTABLE, [test, "--instance", mode]);
-
-                    proc.stdout.on("data", (data) => {
-                        stdOut += data.toString();
-                    });
-
-                    proc.stderr.on("data", (data) => {
-                        stdErr += data.toString();
-                    });
-
-                    proc.on("exit", (code) => {
-                        if (
-                            mode === "sqlite" &&
-                            stdErr.startsWith("WARNING: SouffleSQLiteInstance doesn")
-                        ) {
-                            stdErr = stdErr.slice(132);
-                        }
-
-                        expect(stdErr.trimEnd()).toEqual("");
-                        expect(code).toEqual(0);
-                        expect(stdOut.trimEnd()).toEqual(expectedOut);
-
-                        done();
-                    });
-                });
-            }
-        });
-    }
-});

@@ -1,3 +1,4 @@
+// A,B,C,CanRenovate,Heritage,Housemate,LivesAt,Owner
 // https://souffle-lang.github.io/rules#negation-in-rules
 .decl Owner(person: symbol, building: symbol)
 .decl Heritage(building: symbol)

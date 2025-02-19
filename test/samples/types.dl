@@ -1,3 +1,4 @@
+// A,B,Magic,Name,Translate
 // https://souffle-lang.github.io/types#float-type
 
 .decl Name(n: symbol)

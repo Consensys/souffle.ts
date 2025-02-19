@@ -3,7 +3,7 @@
 
 # souffle.ts
 
-Wrapper library around the [Soufflé Datalog Language](https://souffle-lang.github.io/).
+Small wrapper for interacting with the [Soufflé interpreter](https://souffle-lang.github.io/).
 
 ## Installation
 
@@ -38,3 +38,11 @@ npm install
 npm link
 soufle-ts --version
 ```
+
+## CLI usage
+
+TODO
+
+## API usage
+
+TODO

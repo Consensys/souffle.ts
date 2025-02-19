@@ -1,0 +1,19 @@
+// d.R,d.c.R1
+.comp A {
+  .decl R(x: number)
+  R(1).
+  R(2).
+
+  .comp B {
+    .decl R1(x: number)
+
+    R1(x) :- R(y), x=y+1.
+
+    .output R1()
+  }
+
+  .init c = B
+  .output R()
+}
+
+.init d = A

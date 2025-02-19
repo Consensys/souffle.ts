@@ -598,11 +598,11 @@ relation_decl
  * Relation Names
  */
 relation_names
-  : IDENT
+  : qualified_name 
     {
       $$ = [$1];
     }
-  | relation_names COMMA IDENT
+  | relation_names COMMA qualified_name
     {
       $$ = $1;
       $$.push($3);

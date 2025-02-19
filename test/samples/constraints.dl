@@ -1,3 +1,4 @@
+// inputData,outputData,outputData2,stringTable,substringTable
 // https://souffle-lang.github.io/constraints
 
 .decl stringTable(t:symbol)

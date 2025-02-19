@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import fse from "fs-extra";
-import {
-    SouffleCSVInstance,
-    SouffleCSVToSQLInstance,
-    SouffleInstance,
-    SouffleSQLiteInstance
-} from "../instance";
 import { parseProgram } from "../parser";
+import { runCSV } from "../run";
 
 const pkg = require("../../package.json");
 
@@ -24,8 +19,11 @@ async function main() {
 
     program
         .option("--stdin", "Read input from STDIN instead of files")
-        .option("--parse", "Print AST of parsed Datalog source and exit")
-        .option("--instance <type>", "Type of instance - one of csv, sqlite, csv2sqlite", "csv");
+        .requiredOption(
+            "--output-relations <relations...>",
+            "Comma separated list of relations to output"
+        )
+        .option("--parse", "Print AST of parsed Datalog source and exit");
 
     program.parse(process.argv);
 
@@ -65,28 +63,15 @@ async function main() {
         return;
     }
 
-    let instance: SouffleInstance;
+    const outputRelationNames: string[] = options.outputRelations ? options.outputRelations : [];
+    const res = await runCSV(dl, outputRelationNames);
 
-    if (options.instance === "csv") {
-        instance = new SouffleCSVInstance(dl);
-    } else if (options.instance === "sqlite") {
-        instance = new SouffleSQLiteInstance(dl);
-    } else if (options.instance === "csv2sqlite") {
-        instance = new SouffleCSVToSQLInstance(dl);
-    } else {
-        throw new Error(`Unknown instance type ${options.instance}`);
-    }
-
-    const relations = [...instance.relations()];
-
-    await instance.run(relations.map((reln) => reln.name));
-
-    const res = await instance.allFacts();
-    const orderedRelns = [...res.entries()];
+    const facts = await res.allFacts();
+    const orderedRelns = [...facts.entries()];
     orderedRelns.sort(([reln1], [reln2]) => (reln1 < reln2 ? -1 : reln1 === reln2 ? 0 : 1));
 
     for (const [relnName, facts] of orderedRelns) {
-        const rel = instance.relation(relnName);
+        const rel = res.relation(relnName);
 
         console.log(`/// ${relnName}`);
         console.log("===============");
@@ -96,8 +81,6 @@ async function main() {
             console.log(fact.toCSVRow().join("    "));
         }
     }
-
-    instance.release();
 }
 
 main()
