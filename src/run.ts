@@ -12,7 +12,7 @@ import { spawnSync } from "child_process";
 export type SouffleOutputType = "csv" | "sqlite";
 export type FactMap = Map<string, Fact[]>;
 
-abstract class Result {
+export abstract class Result {
     protected _relationMap: Map<string, Relation>;
     constructor(public readonly relations: Relation[]) {
         this._relationMap = new Map(relations.map((r) => [r.name, r]));
