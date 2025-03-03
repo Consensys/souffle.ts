@@ -85,48 +85,6 @@ function isRecord(v: FieldVal): v is RecordVal {
     return v instanceof Object && !isADT(v);
 }
 
-// TODO: A lot of functions with very similar structure. Code duplication probably here
-
-function fieldValToJSON(val: FieldVal, typ: DatalogType): any {
-    if (typ === SymbolT) {
-        return val;
-    }
-
-    if (typ === NumberT || typ === UnsignedT || typ === FloatT) {
-        return Number(val);
-    }
-
-    if (typ instanceof SubT) {
-        return fieldValToJSON(val, typ.parentT);
-    }
-
-    if (typ instanceof AliasT) {
-        return fieldValToJSON(val, typ.originalT);
-    }
-
-    if (typ instanceof RecordT) {
-        if (val === null) {
-            return null;
-        }
-
-        assert(isRecord(val), `Expected a Record in fieldValToJSON, not ${val}`);
-
-        return typ.fields.map(([name, fieldT]) => fieldValToJSON(val[name], fieldT));
-    }
-
-    if (typ instanceof ADTT) {
-        assert(isADT(val), `Expected an ADT val in fieldValToJSON, not ${val}`);
-        const branchT = typ.branch(val[0]);
-
-        return {
-            branch: val[0],
-            args: branchT.map(([name, fieldT]) => fieldValToJSON(val[1][name], fieldT))
-        };
-    }
-
-    throw new Error(`NYI type ${typ.name}`);
-}
-
 export function ppFieldVal(val: FieldVal, typ: DatalogType): string {
     if (typ === SymbolT) {
         return val as string;
@@ -195,6 +153,65 @@ function parseFieldValFromCsv(val: any, typ: DatalogType): FieldVal {
     throw new Error(`NYI datalog type "${typ.name}"`);
 }
 
+function fieldValToCSV(val: FieldVal, typ: DatalogType): any {
+    if (typ === NumberT || typ === UnsignedT || typ === FloatT) {
+        return Number(val);
+    }
+
+    if (typ === SymbolT) {
+        return String(val);
+    }
+
+    if (typ instanceof SubT) {
+        return fieldValToCSV(val, typ.parentT);
+    }
+
+    if (typ instanceof AliasT) {
+        return fieldValToCSV(val, typ.originalT);
+    }
+
+    if (typ instanceof RecordT) {
+        return ppFieldVal(val, typ);
+    }
+
+    if (typ instanceof ADTT) {
+        return ppFieldVal(val, typ);
+    }
+
+    throw new Error(`NYI datalog type "${typ.name}"`);
+}
+
+function fieldValToSQL(val: FieldVal, typ: DatalogType): number | string {
+    if (typ === NumberT || typ === UnsignedT || typ === FloatT) {
+        if (typeof val === "bigint") {
+            return String(val);
+        }
+
+        assert(typeof val === "number", `Expected a number`);
+        return val;
+    }
+
+    if (typ === SymbolT) {
+        assert(typeof val === "string", `Expected a string`);
+
+        return val;
+    }
+
+    if (typ instanceof SubT) {
+        return fieldValToSQL(val, typ.parentT);
+    }
+
+    if (typ instanceof AliasT) {
+        return fieldValToSQL(val, typ.originalT);
+    }
+
+    if (typ instanceof RecordT || typ instanceof ADTT) {
+        return ppFieldVal(val, typ);
+    }
+
+    throw new Error(`NYI datalog type "${typ.name}"`);
+}
+
 function parseFieldValFromSQL(val: any, typ: DatalogType): FieldVal {
     if (typ === NumberT || typ === UnsignedT || typ === FloatT) {
         assert(typeof val === "number", `Expected a number`);
@@ -228,26 +245,17 @@ function parseFieldValFromSQL(val: any, typ: DatalogType): FieldVal {
 }
 
 export class Fact {
-    private constructor(
+    constructor(
         public readonly relation: Relation,
         public readonly fields: FieldVal[]
     ) {}
 
+    pp(): string {
+        return `${this.relation.name}(${this.fields.map((field, i) => ppFieldVal(field, this.relation.fields[i][1])).join(", ")}).`;
+    }
+
     toCSVRow(): string[] {
         return this.fields.map((x, i) => ppFieldVal(x, this.relation.fields[i][1]));
-    }
-
-    toJSON(): any {
-        return this.fields.map((x, i) => fieldValToJSON(x, this.relation.fields[i][1]));
-    }
-
-    static fromCSVRow(rel: Relation, cols: string[]): Fact {
-        assert(cols.length === rel.fields.length, ``);
-
-        return new Fact(
-            rel,
-            cols.map((val, idx) => parseFieldValFromCsv(val, rel.fields[idx][1]))
-        );
     }
 
     static fromCSVRows(rel: Relation, rows: string[][]): Fact[] {
@@ -262,11 +270,11 @@ export class Fact {
         );
     }
 
-    static fromSQLRow(rel: Relation, obj: any): Fact {
-        return new Fact(
-            rel,
-            rel.fields.map(([name, typ]) => parseFieldValFromSQL(obj[name], typ))
-        );
+    static toCSVRows(facts: Fact[]): any[][] {
+        const reln = facts[0].relation;
+        const fieldTypes = reln.fields.map(([, typ]) => typ);
+
+        return facts.map((fact) => fact.fields.map((val, i) => fieldValToCSV(val, fieldTypes[i])));
     }
 
     static fromSQLRows(rel: Relation, objs: any[]): Fact[] {
@@ -276,6 +284,15 @@ export class Fact {
                     rel,
                     rel.fields.map(([name, typ]) => parseFieldValFromSQL(obj[name], typ))
                 )
+        );
+    }
+
+    static toSQLRows(facts: Fact[]): Array<Array<string | number>> {
+        const reln = facts[0].relation;
+        const fieldTypes = reln.fields.map(([, typ]) => typ);
+
+        return facts.map((fact) =>
+            fact.fields.map((field, i) => fieldValToSQL(field, fieldTypes[i]))
         );
     }
 }

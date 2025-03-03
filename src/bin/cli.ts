@@ -4,7 +4,7 @@ import fse from "fs-extra";
 import { parseProgram } from "../parser";
 import { TypeEnv } from "../types";
 import { getRelations } from "../relation";
-import { run } from "../run";
+import { runInterp } from "../run";
 
 const pkg = require("../../package.json");
 
@@ -22,7 +22,7 @@ async function main() {
     program
         .option("--stdin", "Read input from STDIN instead of files")
         .option("--parse", "Print AST of parsed Datalog source and exit")
-        .option("--instance <type>", "Type of instance - one of csv, sqlite", "csv");
+        .option("--instance <type>", "Type of instance - either csv or sqlite", "csv");
 
     program.parse(process.argv);
 
@@ -63,7 +63,7 @@ async function main() {
 
     const env = TypeEnv.buildTypeEnv(ast);
     const relations = getRelations(ast, env);
-    const result = await run(dl, relations, options.instance);
+    const result = await runInterp(dl, relations, options.instance);
 
     const facts = await result.allFacts();
 

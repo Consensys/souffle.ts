@@ -35,3 +35,12 @@ export function searchRecursive(targetPath: string, filter: (entry: string) => b
 
     return results;
 }
+
+export function repeat<T>(a: T, n: number): T[] {
+    const res: T[] = [];
+    for (let i = 0; i < n; i++) {
+        res.push(a);
+    }
+
+    return res;
+}
