@@ -76,17 +76,20 @@ export async function runInterp(
  */
 export async function runCompiled(
     inputFacts: FactSet,
-    outputRelations: Relation[],
-    type: SouffleOutputType,
+    outputFacts: FactSet,
     executable: string,
     soDir?: string
-): Promise<FactSet> {
+): Promise<void> {
     inputFacts.persist();
 
-    const sysTmpDir = os.tmpdir();
-    const tmpDir = await fse.mkdtempSync(join(sysTmpDir, "sol-datalog-"));
-
-    const args = ["--wno", "all", "--fact-dir", inputFacts.directory, "--output-dir", tmpDir];
+    const args = [
+        "--wno",
+        "all",
+        "--fact-dir",
+        inputFacts.directory,
+        "--output-dir",
+        outputFacts.directory
+    ];
 
     if (soDir !== undefined) {
         args.push(`-L${soDir}`);
@@ -100,12 +103,5 @@ export async function runCompiled(
         throw new Error(
             `Souffle terminated with non-zero exit code (${result.status}): ${result.stderr}`
         );
-    }
-
-    if (type === "csv") {
-        return new CSVFactSet(outputRelations, tmpDir);
-    } else {
-        // @todo hardcoded path here
-        return new SQLFactSet(outputRelations, tmpDir, "output.sqlite");
     }
 }

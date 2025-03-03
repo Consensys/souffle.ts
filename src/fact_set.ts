@@ -7,6 +7,7 @@ import { parse } from "csv-parse/sync";
 import { stringify } from "csv-stringify/sync";
 import sqlite3 from "sqlite3";
 import fse from "fs-extra";
+import os from "os";
 
 export type FactMap = Map<string, Fact[]>;
 
@@ -21,11 +22,19 @@ export type FactMap = Map<string, Fact[]>;
  */
 export abstract class FactSet {
     protected _relationMap: Map<string, Relation>;
+    public readonly directory: string;
 
     constructor(
         public readonly relations: Relation[],
-        public readonly directory: string
+        _directory?: string
     ) {
+        if (!_directory) {
+            const sysTmpDir = os.tmpdir();
+            _directory = fse.mkdtempSync(join(sysTmpDir, "sol-datalog-"));
+        }
+
+        this.directory = _directory;
+
         this._relationMap = new Map(relations.map((r) => [r.name, r]));
     }
 
@@ -144,7 +153,7 @@ export class SQLFactSet extends CachedFactSet {
 
     constructor(
         public readonly relations: Relation[],
-        directory: string,
+        directory?: string,
         dbName: string = "facts.db"
     ) {
         super(relations, directory);
