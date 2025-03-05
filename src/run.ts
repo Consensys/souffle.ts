@@ -85,7 +85,7 @@ export async function runCompiled(
 
     const args = ["--facts", inputFacts.directory, "--output", outputFacts.directory];
 
-    const subEnv = soDir !== undefined ? { LD_LIBRARY_PATH: env.LD_LIBRARY_PATH, ...env } : env;
+    const subEnv = soDir !== undefined ? { LD_LIBRARY_PATH: soDir, ...env } : env;
 
     const result = spawnSync(executable, args, {
         encoding: "utf-8",
