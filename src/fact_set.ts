@@ -47,6 +47,7 @@ export abstract class FactSet {
 
     abstract facts(name: string): Promise<Fact[]>;
     abstract allFacts(): Promise<FactMap>;
+    abstract addFacts(...facts: Fact[]): void;
 
     // Persist all local fact changes to disk
     abstract persist(): Promise<void>;
@@ -103,6 +104,12 @@ export abstract class CachedFactSet extends FactSet {
         return this._factCache;
     }
 
+    initializeEmpty(): void {
+        for (const reln of this._relationMap.values()) {
+            this._factCache.set(reln.name, []);
+        }
+    }
+
     abstract loadRelation(reln: Relation): Promise<Fact[]>;
     abstract dumpRelation(reln: Relation): Promise<void>;
 
@@ -138,7 +145,7 @@ export class CSVFactSet extends CachedFactSet {
         const fileName = join(this.directory, relation.name + ".csv");
 
         const facts = await this.facts(relation.name);
-        const csv = Fact.toCSVRows(facts);
+        const csv = facts.length > 0 ? Fact.toCSVRows(facts) : [];
 
         fse.writeFileSync(fileName, stringify(csv));
     }
@@ -181,8 +188,13 @@ export class SQLFactSet extends CachedFactSet {
     async dumpRelation(relation: Relation): Promise<void> {
         const db = await this.db();
         const facts = await this.facts(relation.name);
-        const sqlVals = Fact.toSQLRows(facts);
         await createTableForRelation(db, relation);
+
+        if (facts.length === 0) {
+            return;
+        }
+
+        const sqlVals = Fact.toSQLRows(facts);
         const stmt = await db.prepare(
             `INSERT INTO ${relation.name} VALUES (${repeat("?", relation.fields.length).join(", ")})`
         );

@@ -4,6 +4,7 @@ import fse from "fs-extra";
 import { Relation } from "./relation";
 import { spawnSync } from "child_process";
 import { CSVFactSet, FactSet, SQLFactSet } from "./fact_set";
+import { env } from "process";
 
 export type SouffleOutputType = "csv" | "sqlite";
 
@@ -80,23 +81,15 @@ export async function runCompiled(
     executable: string,
     soDir?: string
 ): Promise<void> {
-    inputFacts.persist();
+    await inputFacts.persist();
 
-    const args = [
-        "--wno",
-        "all",
-        "--fact-dir",
-        inputFacts.directory,
-        "--output-dir",
-        outputFacts.directory
-    ];
+    const args = ["--facts", inputFacts.directory, "--output", outputFacts.directory];
 
-    if (soDir !== undefined) {
-        args.push(`-L${soDir}`);
-    }
+    const subEnv = soDir !== undefined ? { LD_LIBRARY_PATH: env.LD_LIBRARY_PATH, ...env } : env;
 
     const result = spawnSync(executable, args, {
-        encoding: "utf-8"
+        encoding: "utf-8",
+        env: subEnv
     });
 
     if (result.status !== 0) {
